@@ -8,6 +8,7 @@ from flask_login import login_required, current_user
 from app.blog import blog
 from app.form.content import ArticleForm
 from app.libs.ImageUload import filer_save
+from app.libs.decorators import auth_required
 from app.models.base import db
 from app.models.content import Article
 from app.models.user import User
@@ -15,6 +16,7 @@ from app.models.user import User
 
 @blog.route('/submit', methods=['POST', 'GET'])
 @login_required
+@auth_required('superadmin')
 def create_article():
     form = ArticleForm()
     if form.validate_on_submit():
@@ -32,19 +34,21 @@ def create_article():
 
 @blog.route('/files/<path:filename>')
 def uploaded_files(filename):
-    path = '/the/uploaded/directory'
+    BasePath = os.path.join(current_app.root_path, 'static')
+    path = os.path.join(BasePath, 'upload')
     return send_from_directory(path, filename)
 
 
 @blog.route('/upload', methods=['POST'])
+@login_required
 def save_upload():
     if request.method == "POST":
         BasePath = os.path.join(current_app.root_path, 'static')
-        filer_save(BasePath)
+        return filer_save(BasePath)
 
 
 @blog.route('/edit/<int:id>', methods=['POST', 'GET'])
-@login_required
+@auth_required('superadmin')
 def editArticle(id):
     form = ArticleForm()
     article = Article.query.get_or_404(id)
@@ -66,3 +70,12 @@ def like_article(aid):
         article.like += 1
         db.session.add(article)
         return 'success'
+
+
+@blog.route('/static/upload')
+def a():
+    from flask.helpers import get_root_path
+    BasePath = os.path.join(current_app.root_path, 'static')
+    path = os.path.join(BasePath, 'upload')
+    from flask import safe_join
+    return safe_join(path)

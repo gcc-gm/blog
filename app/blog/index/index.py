@@ -3,7 +3,7 @@
 from flask import render_template, request
 from flask.json import jsonify
 
-from flask_login import login_required, current_user
+from flask_login import login_required
 
 from app.blog import blog
 from app.ViewModel.content import ViewArticles
@@ -16,7 +16,6 @@ def index():
     pagination = Article.query.order_by(Article.timestamp.desc()).paginate(
         page, per_page=5, error_out=False
     )
-
     return render_template('index/index.html', pagination=pagination)
 
 
@@ -27,12 +26,5 @@ def page_json(page):
         page, per_page=5, error_out=False
     )
     articles = ViewArticles()
-
     articles.fill(pagination.items)
-
     return jsonify(articles)
-    # a = pagination.items[0]
-    # user = current_user.had_like(a.id)
-    # return ''
-
-

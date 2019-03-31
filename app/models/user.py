@@ -91,12 +91,13 @@ class User(UserMixin, Base):
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
         if self.role is None:
-            if self.email == current_app.config['ADMIN']:
-                self.role = Role.query.filter_by(name='ADMIN').first()
-            elif self.email == current_app.config['SUPERADMIN']:
-                self.role = Role.query.filter_by(name='SUPERADMIN').first()
-            else:
-                self.role = Role.query.filter_by(name='User').first()
+            with db.auto_commit():
+                if self.email == current_app.config['ADMIN']:
+                    self.role = Role.query.filter_by(name='ADMIN').first()
+                elif self.email == current_app.config['SUPERADMIN']:
+                    self.role = Role.query.filter_by(name='SUPERADMIN').first()
+                else:
+                    self.role = Role.query.filter_by(name='User').first()
 
     @property
     def password(self):
@@ -112,10 +113,11 @@ class User(UserMixin, Base):
 
     def can(self, permission_name):
         permission = Permission.query.filter_by(name=permission_name).first()
-        return self.role is not None and permission is not None and self.role.permissions is not None
+        return self.role is not None and permission is not None and \
+               permission in self.role.permissions
 
-    def is_administrator(self):
-        return self.can('SuperAdmin')
+    def auth(self, identify):
+        return self.role.name.upper() == identify.upper()
 
     def had_like(self, article):
         if self.likes is None:
