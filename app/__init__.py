@@ -46,11 +46,6 @@ def create_app():
     moment.init_app(app)
     admin.init_app(app)
 
-    path = op.join(op.dirname(__file__), 'static')
-    from app.ViewModel.AdminModel import MyView
-
-    # admin.add_view(MyView(name='m'))
-
     csrf.init_app(app)
     mail.init_app(app)
     db.init_app(app)

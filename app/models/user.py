@@ -127,11 +127,16 @@ class User(UserMixin, Base):
 
     def like(self, article):
         if self.had_like(article):
-            pass
+            with db.auto_commit():
+                newLike = Like()
+                newLike.articles = article
+                newLike.users = self
 
     def unlike(self, article):
-        if not self.had_like(article):
-            pass
+        theLike = Like.query.with_parent(self, property='likes').filter_by(aid=article.id).first()
+        if theLike:
+            with db.auto_commit():
+                db.session.delete(theLike)
 
 
 class Gust(AnonymousUserMixin):
