@@ -1,0 +1,6 @@
+/venv/
+text.*
+/app/config/
+/migrations/
+/.idea/
+/__pycache__/
