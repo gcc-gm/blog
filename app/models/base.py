@@ -28,7 +28,7 @@ class Base(db.Model):
     status = db.Column(db.Boolean, default=True)
 
     def __init__(self):
-        self.timestamp = datetime.now()
+        self.timestamp = datetime.utcnow()
 
     def delete(self):
         self.status = False

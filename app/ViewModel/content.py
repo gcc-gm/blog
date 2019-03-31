@@ -16,9 +16,6 @@ class ViewArticle():
     def __getitem__(self, item):
         return getattr(self, item)
 
-    # def to_dict(self):
-    #     return dict(self)
-    #
 
 
 class ViewArticles():
@@ -35,3 +32,4 @@ class ViewArticles():
 
     def __getitem__(self, item):
         return getattr(self, item)
+

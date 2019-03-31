@@ -2,6 +2,9 @@
 # -*- coding: utf-8 -*-
 
 import os.path as op
+
+from flask_moment import Moment
+
 from app.libs.blogflask import Flask
 from flask_bootstrap import Bootstrap
 from flask_migrate import Migrate
@@ -21,6 +24,7 @@ bootstrap = Bootstrap()
 mail = Mail()
 login_manager = LoginManager()
 migrate = Migrate()
+moment = Moment()
 
 
 def create_app():
@@ -39,6 +43,7 @@ def create_app():
     bootstrap.init_app(app)
     pagedown.init_app(app)
     ckeditor.init_app(app)
+    moment.init_app(app)
     admin.init_app(app)
 
     path = op.join(op.dirname(__file__), 'static')

@@ -1,10 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from flask import render_template
+import os
+
+from flask import render_template, request, send_from_directory, current_app
 from flask_login import login_required, current_user
 
 from app.blog import blog
 from app.form.content import ArticleForm
+from app.libs.ImageUload import filer_save
 from app.models.base import db
 from app.models.content import Article
 from app.models.user import User
@@ -25,6 +28,19 @@ def create_article():
         return render_template('content/ArticleView.html', data=form.body.data)
 
     return render_template('content/newArticle.html', form=form)
+
+
+@blog.route('/files/<path:filename>')
+def uploaded_files(filename):
+    path = '/the/uploaded/directory'
+    return send_from_directory(path, filename)
+
+
+@blog.route('/upload', methods=['POST'])
+def save_upload():
+    if request.method == "POST":
+        BasePath = os.path.join(current_app.root_path, 'static')
+        filer_save(BasePath)
 
 
 @blog.route('/edit/<int:id>', methods=['POST', 'GET'])
