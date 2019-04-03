@@ -3,19 +3,25 @@
 
 
 class ViewArticle():
+    likes = 0
+    postscript = 0
+
     def __init__(self, article):
         self.id = article.id
-        self.pre_image = article.pre_image or ''
+        self.pre_image = article.pre_image
         self.name = article.name
         self.body = article.body
+        self.comments = ''
         self.timestamp = article.timestamp
 
     def keys(self):
-        return ['id', 'name', 'body', 'timestamp']
+        return ['id', 'name', 'body', 'timestamp', 'per_image']
 
     def __getitem__(self, item):
         return getattr(self, item)
 
+    def all_like(self, article):
+        pass
 
 
 class ViewArticles():
@@ -32,4 +38,3 @@ class ViewArticles():
 
     def __getitem__(self, item):
         return getattr(self, item)
-

@@ -1,32 +1,77 @@
-<!doctype html>
-<html lang="en">
-<head>
-    {% block head %}
-        <!-- Required meta tags -->
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-        {% block styles %}
-            <!-- Bootstrap CSS -->
-            {{ bootstrap.load_css() }}
-        {% endblock %}
-
-        <title>Your page title</title>
-    {% endblock %}
-</head>
-<body>
-<!-- Your page contont -->
-{% block content %}
-
-    {% from 'bootstrap/pagination.html' import render_pagination %}
-
-    {{ render_pagination(pagination,align='center',endpoint='blog.page_json') }}
+{% extends 'base.html' %}
+{% block head %}
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
 
 {% endblock %}
 
-{% block scripts %}
-    <!-- Optional JavaScript -->
-    {{ bootstrap.load_js() }}
+{% block main %}
+    <div style="margin-bottom: 0" class="jumbotron">
+        <div class="container-fluid">
+            <h2>欢迎来到 BLK 的博客!</h2>
+        </div>
+    </div>
+    {#    导航栏#}
+    <div class="container">
+        <div class="row">
+            <ul class="nav nav-pills">
+                <li role="presentation" class="active"><a href="#">首页</a></li>
+                <li role="presentation"><a href="#">Profile</a></li>
+                <li role="presentation"><a href="#">Messages</a></li>
+            </ul>
+        </div>
+    </div>
+
+
+    <div class="container">
+        <div class="row">
+            <div class="content col-md-8 col-md-offset-2">
+
+                <div class="panel panel-default">
+                    <div style="" class="panel-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <a href="" class="link">王者荣耀为何这么吊?<span
+                                                class="label label-default">New</span></a>
+                                        <p class="indfo">01 前几天，看到了一条触目惊心的新闻： 南京一名95后的女生小刘，有段时间一直宅在家里。
+                                            除了上厕所、吃饭、拿快递，她几乎都不下床。 5天之后文/大农 生老病死，是常见的人体自然规律，每个人都无法避免。
+                                            但古往今来，总有些人表示“我就是不服”，非得和命运一争高下。于是，各种五花八门追求.
+                                        </p>
+                                        <span>作者:</span>
+                                        <span>他的国</span>
+                                        <span></span>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <img style=""
+                                             src="https://img04.sogoucdn.com/app/a/100520093/3c28af542f2d49f7-da1566425074a021-4dd500a08535394bc4c64c68f672a2d6.jpg"
+                                             class="img-responsive" alt="Responsive image"/>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
 {% endblock %}
-</body>
-</html>
+
+{##}
+{#<div class="container">#}
+{#    <div class="row">#}
+{#        <div class="col-md-4 col-md-offset-4">#}
+{#            {% from 'bootstrap/pagination.html' import render_pagination %}#}
+{#            {{ render_pagination(pagination,align='center') }}#}
+{#        </div>#}
+{#    </div>#}
+{##}
+{#</div>#}
+

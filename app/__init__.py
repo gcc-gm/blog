@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os.path as op
-
 from flask_moment import Moment
 
 from app.libs.blogflask import Flask

@@ -26,7 +26,7 @@ class Article(Base):
     __tablename__ = 'articles'
     id = db.Column(db.Integer, primary_key=True)
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    # pre_image = db.Column(db.String(20), unique=True, nullable=False)
+    pre_image = db.Column(db.String(80), unique=True, nullable=False)
     name = db.Column(db.String(20), unique=True, nullable=False)
     body = db.Column(db.Text, unique=False)
 
@@ -36,6 +36,14 @@ class Article(Base):
     comments = db.relationship('Comment', cascade='all', back_populates='article')
     # 多对多关系建立
     tags = db.relationship('Tag', secondary='association', back_populates='articles')
+
+    def get_comments(self):
+        if self.comments is None:
+            return []
+
+
+        comments = [self.comments]
+        return ['']
 
 
 class Comment(Base):

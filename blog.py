@@ -51,6 +51,7 @@ def faker(count=10):
 
         article.name = faker.user_name()
         article.body = faker.text()
+        article.pre_image = faker.user_name()
 
         comment.body = faker.sentence()
 
