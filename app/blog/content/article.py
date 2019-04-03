@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import os
+from random import random
 
 from flask import render_template, request, send_from_directory, current_app
 from flask_login import login_required, current_user
@@ -25,6 +26,7 @@ def create_article():
             article = Article()
             article.name = form.name.data
             article.body = form.body.data
+            article.pre_image = random()
             user.articles.append(article)
 
         return render_template('content/ArticleView.html', data=form.body.data)
@@ -72,10 +74,9 @@ def like_article(aid):
         return 'success'
 
 
-@blog.route('/static/upload')
-def a():
-    from flask.helpers import get_root_path
-    BasePath = os.path.join(current_app.root_path, 'static')
-    path = os.path.join(BasePath, 'upload')
-    from flask import safe_join
-    return safe_join(path)
+@blog.route('/pre/<int:aid>')
+def pre(aid):
+    article = Article.query.get_or_404(aid)
+    return render_template('content/ArticleView.html',data=article.body)
+
+
