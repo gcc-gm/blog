@@ -11,6 +11,12 @@ association = db.Table('association',
                                  db.ForeignKey('tags.id')),
                        db.Column('article_id', db.Integer,
                                  db.ForeignKey('articles.id')))
+# 辅助表
+sort_article = db.Table('sort_article',
+                        db.Column('sort_id', db.Integer,
+                                  db.ForeignKey('sorts.id')),
+                        db.Column('article_id', db.Integer,
+                                  db.ForeignKey('articles.id')))
 
 
 class Tag(Base):
@@ -36,6 +42,7 @@ class Article(Base):
     comments = db.relationship('Comment', cascade='all', back_populates='article')
     # 多对多关系建立
     tags = db.relationship('Tag', secondary='association', back_populates='articles')
+    sorts = db.relationship('Sorted', secondary='sort_article', back_populates='articles')
 
     @classmethod
     def get_recommend(cls):
@@ -46,16 +53,28 @@ class Article(Base):
             return []
 
         comments = [self.comments]
-        return ['']
+        return []
 
 
 class Recommend(Base):
+    __tablename__ = 'recommends'
     id = db.Column(db.Integer, primary_key=True)
-    uid = db.Column(db.Integer, db.ForeignKey('users.id'))
     article_id = db.Column(db.Integer, db.ForeignKey('articles.id'))
 
-    def get_new(self):
-        new_list = Article.query.order_by(Article.timestamp.desc()).all()
+    @classmethod
+    def get_new(csl, page):
+        pagination = Recommend.query.order_by(Recommend.timestamp.desc()).paginate(
+            page, per_page=5, error_out=False
+        )
+        return pagination
+
+
+class Sorted(Base):
+    __tablename__ = 'sorts'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(20), nullable=False, unique=True)
+    articles = db.relationship('Article',
+                               secondary='sort_article', back_populates='sorts')
 
 
 class Comment(Base):

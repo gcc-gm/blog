@@ -9,8 +9,10 @@ class ViewArticle():
     def __init__(self, article):
         self.id = article.id
         self.pre_image = article.pre_image
+        self.author = article.author.nickname or '无名'
         self.name = article.name
         self.body = article.body
+        self.summary = article.body[:150]
         self.comments = ''
         self.timestamp = article.timestamp
 
@@ -38,3 +40,14 @@ class ViewArticles():
 
     def __getitem__(self, item):
         return getattr(self, item)
+
+
+class Recommend():
+    def __init__(self, recommend):
+        self.title = self.get_title(recommend) or ''
+
+    @classmethod
+    def get_title(cls, recommend):
+        from app.models.content import Article
+        article = Article.query.filter_by(aid=recommend.aid).first_or_404()
+        return article.name

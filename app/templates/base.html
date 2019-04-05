@@ -39,7 +39,7 @@
     {% block aside %}
         <aside class="l_box">
             <div class="about_me">
-                <h2>关于我</h2>
+                <h2>关于站长</h2>
                 <ul>
                     <i><img src="{{ url_for('static', filename='images/about_me.jpg') }}"></i>
                     <p><b>BLk</b>，你是什么人便会遇上什么人你是什么人便你是什么人便会遇上什么人
@@ -62,10 +62,13 @@
             <div class="fenlei">
                 <h2>文章分类</h2>
                 <ul>
-                    <li><a href="/">分类1（33）</a></li>
-                    <li><a href="/">分类2（19）</a></li>
-                    <li><a href="/">分类3（19）</a></li>
-                    <li><a href="/">分类4 (3)</a></li>
+                    <li class="lsss" value="1"><a href="#">分类1（33）</a></li>
+                    <li><a href="#">分类2（19）</a></li>
+                    <li><a href="#">分类3（19）</a></li>
+                    <li><a href="#">分类4 (3)</a></li>
+                    <script>
+
+                    </script>
                 </ul>
             </div>
             <div class="tuijian">
@@ -105,4 +108,10 @@
     <a href="#" class="cd-top">Top</a>
 {% endblock %}
 </body>
+
+{% block script %}
+
+{% endblock %}
+
+
 </html>

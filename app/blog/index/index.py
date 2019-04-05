@@ -15,11 +15,11 @@ def index():
     viewarticles = ViewArticles()
     page = request.args.get('page', 1, type=int)
     pagination = Article.query.order_by(Article.timestamp.desc()).paginate(
-        page, per_page=5, error_out=False
+        page, per_page=15, error_out=False
     )
     viewarticles.fill(pagination.items)
 
-    return render_template('index/index.html', articles=viewarticles.articles, pagination=pagination)
+    return render_template('index/index.html', articles=viewarticles.articles)
 
 
 @blog.route('/pageJson/<int:page>', methods=['GET'])
