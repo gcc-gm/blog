@@ -37,13 +37,25 @@ class Article(Base):
     # 多对多关系建立
     tags = db.relationship('Tag', secondary='association', back_populates='articles')
 
+    @classmethod
+    def get_recommend(cls):
+        pass
+
     def get_comments(self):
         if self.comments is None:
             return []
 
-
         comments = [self.comments]
         return ['']
+
+
+class Recommend(Base):
+    id = db.Column(db.Integer, primary_key=True)
+    uid = db.Column(db.Integer, db.ForeignKey('users.id'))
+    article_id = db.Column(db.Integer, db.ForeignKey('articles.id'))
+
+    def get_new(self):
+        new_list = Article.query.order_by(Article.timestamp.desc()).all()
 
 
 class Comment(Base):

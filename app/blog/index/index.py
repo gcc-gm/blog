@@ -37,4 +37,4 @@ def page_json(page):
 def detail(aid):
     article = Article.query.get_or_404(aid)
     viewarticle = ViewArticle(article)
-    return render_template('content/detail.html')
+    return render_template('content/detail.html', data=article.body)
