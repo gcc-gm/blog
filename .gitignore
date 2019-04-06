@@ -124,6 +124,6 @@ text.py
 app/secure.py
 app/setting.py
 app/config/
-
+app/static
 # Pyre type checker
 .pyre/
