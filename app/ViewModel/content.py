@@ -2,9 +2,8 @@
 # -*- coding: utf-8 -*-
 
 
-class ViewArticle():
+class ViewArticle:
     likes = 0
-    postscript = 0
 
     def __init__(self, article):
         self.id = article.id
@@ -17,7 +16,7 @@ class ViewArticle():
         self.timestamp = article.timestamp
 
     def keys(self):
-        return ['id', 'name', 'body', 'timestamp', 'per_image']
+        return ['id', 'name', 'body', 'timestamp', 'pre_image', 'author']
 
     def __getitem__(self, item):
         return getattr(self, item)
@@ -26,14 +25,15 @@ class ViewArticle():
         pass
 
 
-class ViewArticles():
+class ViewArticles:
     def __init__(self):
         self.total = 0
         self.articles = []
 
     def fill(self, items):
-        self.total = len(items)
-        self.articles = [ViewArticle(article) for article in items]
+        if items:
+            self.total = len(items)
+            self.articles = [ViewArticle(article) for article in items]
 
     def keys(self):
         return ['total', 'articles']
@@ -42,12 +42,34 @@ class ViewArticles():
         return getattr(self, item)
 
 
-class Recommend():
-    def __init__(self, recommend):
-        self.title = self.get_title(recommend) or ''
+class ViewComment:
+    def __init__(self, comment):
+        self.f_id = comment.f_id
+        self.t_id = comment.t_id
+        self.f_name = comment.f_name
+        self.t_name = comment.t_name
+        self.body = comment.body_html
+        self.timestamp = comment.timestamp
 
-    @classmethod
-    def get_title(cls, recommend):
-        from app.models.content import Article
-        article = Article.query.filter_by(aid=recommend.aid).first_or_404()
-        return article.name
+    def keys(self):
+        return ['f_id', 'f_name', 't_id', 't_name', 'body', 'timestamp']
+
+    def __getitem__(self, item):
+        return getattr(self, item)
+
+
+class ViewComments:
+    def __init__(self):
+        self.total = 0
+        self.comments = []
+
+    def fill(self, items):
+        if items:
+            self.total = len(items)
+            self.comments = [ViewComment(com) for com in items]
+
+    def keys(self):
+        return ['total', 'comments']
+
+    def __getitem__(self, item):
+        return getattr(self, item)

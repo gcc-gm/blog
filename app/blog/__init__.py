@@ -6,5 +6,5 @@ from flask import Blueprint
 blog = Blueprint('blog', __name__)
 
 from app.blog.user import user
-from app.blog.content import article, postscript, comment
+from app.blog.content import article, comment
 from app.blog.index import index

@@ -22,7 +22,7 @@
 
 </head>
 <body>
-{% block nav %}
+{% block header %}
     <header class="header-navigation" id="header">
         <nav>
             <div class="logo"><a href="/">BLK的个人博客</a></div>
@@ -35,9 +35,11 @@
         </nav>
     </header>
 {% endblock %}
+
 <article>
-    {% block aside %}
-        <aside class="l_box">
+    <aside class="l_box">
+
+        {% block about_me %}
             <div class="about_me">
                 <h2>关于站长</h2>
                 <ul>
@@ -47,6 +49,9 @@
                     </p>
                 </ul>
             </div>
+        {% endblock %}
+
+        {% block search %}
             <div class="search">
                 <form action="#" method="post" name="searchform" id="searchform">
                     <input name="keyboard" id="keyboard" class="input_text" value="请输入关键字词"
@@ -59,6 +64,9 @@
                     <input name="Submit" class="input_submit" value="搜索" type="submit">
                 </form>
             </div>
+        {% endblock %}
+
+        {% block fenlei %}
             <div class="fenlei">
                 <h2>文章分类</h2>
                 <ul>
@@ -66,11 +74,11 @@
                     <li><a href="#">分类2（19）</a></li>
                     <li><a href="#">分类3（19）</a></li>
                     <li><a href="#">分类4 (3)</a></li>
-                    <script>
-
-                    </script>
                 </ul>
             </div>
+        {% endblock %}
+
+        {% block tuijian %}
             <div class="tuijian">
                 <h2>最新推荐</h2>
                 <ul>
@@ -84,23 +92,47 @@
                     <li><a href="/">个人博客模板《绅士》后台管理</a></li>
                 </ul>
             </div>
+        {% endblock %}
+
+        {% block links %}
             <div class="links">
                 <h2>友情链接</h2>
                 <ul>
                     <a href="http://www.yangqq.com">杨青个人博客</a> <a href="http://www.yangqq.com">杨青博客</a>
                 </ul>
             </div>
-        </aside>
-    {% endblock %}
-    {% block article %}
+        {% endblock %}
 
+        {% block cloud %}
+            <div class="cloud">
+                <h2>标签云</h2>
+                <ul>
+                    <a href="/">陌上花开</a> <a href="/">校园生活</a> <a href="/">html5</a> <a href="/">SumSung</a> <a
+                        href="/">青春</a> <a href="/">温暖</a> <a href="/">阳光</a> <a href="/">三星</a><a href="/">索尼</a> <a
+                        href="/">华维荣耀</a> <a href="/">三星</a> <a href="/">索尼</a>
+                </ul>
+            </div>
+        {% endblock %}
 
-    {% endblock %}
+        {% block guanzhu %}
+            <div class="guanzhu">
+                <h2>关注我 么么哒</h2>
+                <ul>
+                    <img src="images/wx.jpg">
+                </ul>
+            </div>
+        {% endblock %}
 
+    </aside>
     {% block main %}
 
     {% endblock %}
+
+
 </article>
+
+
+
 {% block footer %}
     <footer>
         <p>Design by <a href="#" target="_blank">BLK个人博客</a> <a href="/">蜀ICP备11002373号-1</a></p>
@@ -112,6 +144,5 @@
 {% block script %}
 
 {% endblock %}
-
 
 </html>

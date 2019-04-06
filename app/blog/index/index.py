@@ -7,7 +7,7 @@ from flask_login import login_required
 
 from app.blog import blog
 from app.ViewModel.content import ViewArticles, ViewArticle
-from app.models.content import Article
+from app.models.content import Article, Sorted
 
 
 @blog.route('/')
@@ -18,8 +18,10 @@ def index():
         page, per_page=15, error_out=False
     )
     viewarticles.fill(pagination.items)
+    sorts = Sorted.query.all()
 
-    return render_template('index/index.html', articles=viewarticles.articles)
+    return render_template('index/index.html', sorts=sorts,
+                           articles=viewarticles.articles)
 
 
 @blog.route('/pageJson/<int:page>', methods=['GET'])

@@ -81,7 +81,8 @@ class User(UserMixin, Base):
 
     id = db.Column(db.Integer, primary_key=True)
     role_id = db.Column(db.Integer, db.ForeignKey('role.id'))
-    nickname = db.Column(db.String(10))
+    nickname = db.Column(db.String(30))
+    avatar = db.Column(db.String(30))
     email = db.Column(db.String(30))
     _password = db.Column('password', db.String(256))
     articles = db.relationship('Article', back_populates='author')

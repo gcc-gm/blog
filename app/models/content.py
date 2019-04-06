@@ -35,7 +35,7 @@ class Article(Base):
     pre_image = db.Column(db.String(80), unique=True, nullable=False)
     name = db.Column(db.String(20), unique=True, nullable=False)
     body = db.Column(db.Text, unique=False)
-
+    hot = db.Column(db.Boolean, default=False)
     liked = db.relationship('Like', cascade='all', back_populates='articles', lazy='joined')
     author = db.relationship('User', back_populates='articles')
     # 一对多的双向关系
@@ -55,42 +55,33 @@ class Article(Base):
         comments = [self.comments]
         return []
 
-
-class Recommend(Base):
-    __tablename__ = 'recommends'
-    id = db.Column(db.Integer, primary_key=True)
-    article_id = db.Column(db.Integer, db.ForeignKey('articles.id'))
-
     @classmethod
-    def get_new(csl, page):
-        pagination = Recommend.query.order_by(Recommend.timestamp.desc()).paginate(
-            page, per_page=5, error_out=False
-        )
-        return pagination
+    def get_new(cls):
+        new = cls.query.filter_by(hot=True).order_by(cls.timestamp.desc()).all
+        return new
 
 
 class Sorted(Base):
     __tablename__ = 'sorts'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(20), nullable=False, unique=True)
-    articles = db.relationship('Article',
+    articles = db.relationship('Article', cascade='all',
                                secondary='sort_article', back_populates='sorts')
 
 
 class Comment(Base):
     __tablename__ = 'comments'
     id = db.Column(db.Integer, primary_key=True)
-    uid = db.Column(db.Integer, db.ForeignKey('users.id'))
+    f_id = db.Column(db.Integer, nullable=False)
+    f_avatar = db.Column(db.String(30))
+    f_name = db.Column(db.String(30))
+    to_id = db.Column(db.Integer)
     article_id = db.Column(db.Integer, db.ForeignKey('articles.id'))
     body = db.Column(db.Text, nullable=False)
     body_html = db.Column(db.Text, nullable=False)
-    like = db.Column(db.Integer, default=0)
+
     # 一对多的双向关系
     article = db.relationship('Article', back_populates='comments')
-    # 后评
-    postscripts = db.relationship('Postscript', cascade='all', back_populates='comment')
-    # 仅建立单向关系
-    author = db.relationship('User')
 
     @staticmethod
     def on_change_body(target, value, oldvalue, initiator):
@@ -109,27 +100,4 @@ class Like(Base):
     articles = db.relationship('Article', back_populates='liked', lazy='joined')
 
 
-class Postscript(Base):
-    id = db.Column(db.Integer, primary_key=True)
-    uid = db.Column(db.Integer, db.ForeignKey('users.id'))
-    like = db.Column(db.Integer, default=0)
-    comment_id = db.Column(db.Integer, db.ForeignKey('comments.id'))
-    body = db.Column(db.Text)
-    body_html = db.Column(db.Text)
-    # 建立关系
-    comment = db.relationship('Comment', back_populates='postscripts')
-
-    def __repr__(self):
-        return self.name
-
-    @staticmethod
-    def on_change_body(target, value, oldvalue, initiator):
-        allowed_tags = ['a', 'abbr', 'acronym', 'b', 'blockquote', 'code',
-                        'em', 'i', 'li', 'ol', 'pre', 'strong', 'ul',
-                        'h2', 'h3', 'p']
-        target.body_html = bleach.linkify(bleach.clean(markdown(value, output_format='html'), tags=allowed_tags,
-                                                       strip=True))
-
-
-db.event.listen(Postscript.body, 'set', Postscript.on_change_body)
-db.event.listen(Comment.body, 'set', Postscript.on_change_body)
+db.event.listen(Comment.body, 'set', Comment.on_change_body)

@@ -36,14 +36,13 @@ def faker(count=10):
     from faker import Faker
     from app.models.base import db
     from app.models.user import User
-    from app.models.content import Article, Comment, Postscript
+    from app.models.content import Article, Comment
 
     faker = Faker('zh_CN')
     for i in range(count):
         user = User()
         article = Article()
         comment = Comment()
-        postscript = Postscript()
 
         user.nickname = faker.user_name()
         user.email = faker.safe_email()
@@ -55,10 +54,8 @@ def faker(count=10):
 
         comment.body = faker.sentence()
 
-        postscript.body = faker.sentence()
-
         with db.auto_commit():
-            db.session.add_all([user, article, comment, postscript])
+            db.session.add_all([user, article, comment])
 
 
 @app.cli.command()

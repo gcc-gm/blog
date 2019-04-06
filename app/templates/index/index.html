@@ -4,35 +4,38 @@
     首页
 {% endblock %}
 
-{% block article %}
-    {{ super() }}
+{% block fenlei %}
+    <div class="fenlei">
+        <h2>文章分类</h2>
+        <ul>
+            {% for sort in sorts %}
+                <li onclick="sorted({{ sort.id }})"><a href="#">{{ sort.name }}（{{ 23 }}）</a></li>
+            {% endfor %}
+
+        </ul>
+    </div>
+{% endblock %}
+{% block guanzhu %}
 {% endblock %}
 {% block main %}
-    <div class="content">
-        <main class="r_box">
-            {% for article in articles %}
-                <li><i><a href="/"><img src="{{ url_for('static',filename='images/1.jpg') }}"></a></i>
-                    <h3><a href="/">{{ article.name }}</a>
-                        <small>__{{ article.timestamp }}</small>
-                    </h3>
-                    <small>作者 : {{ article.author }}</small>
-                    <P>
-                        {{ article.summary|safe }}
-                    </P>
-                </li>
-            {% endfor %}
-        </main>
-    </div>
 
+    <main class="r_box">
+        {% for article in articles %}
+            <li><i><a href="/"><img src="{{ url_for('static',filename='images/1.jpg') }}"></a></i>
+                <h3><a href="/">{{ article.name }}</a>
+                    <small>__{{ article.timestamp }}</small>
+                </h3>
+                <small>作者 : {{ article.author }}</small>
+                <P>
+                    {{ article.summary|safe }}
+                </P>
+            </li>
+        {% endfor %}
+    </main>
 {% endblock %}
+
 {% block script %}
     <script>
-
-        $(document).ready(function () {
-            $(".lsss").click(function () {
-                $(".r_box").remove();
-            });
-        });
 
     </script>
 {% endblock %}

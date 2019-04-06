@@ -1,11 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from flask import render_template
+from flask import render_template, request
+from flask.json import jsonify
 from flask_login import login_required, current_user
+
+from app.ViewModel.content import ViewArticles
 from app.blog import blog
 from app.form.content import CommentForm
 from app.models.base import db
-from app.models.content import Article, Comment
+from app.models.content import Article, Comment, Sorted
 
 
 @blog.route('/newComment/<int:aid>', methods=['POST', 'GET'])
@@ -30,3 +33,16 @@ def like_comment(cid):
         comment.like += 1
         db.session.add(comment)
         return 'success'
+
+
+@blog.route('/get_sorted', methods=['GET'])
+def get_sorted():
+    sid = request.args.get('sid', type=int)
+    if sid:
+        sorted = Sorted.query.get_or_404(sid)
+        viewarticles = ViewArticles()
+        articles = sorted.articles
+        viewarticles.fill(articles)
+        return jsonify(viewarticles)
+    return jsonify(ViewArticles())
+
