@@ -41,5 +41,13 @@ def page_json(page):
 @blog.route('/detail/<int:aid>')
 def detail(aid):
     article = Article.query.get_or_404(aid)
+    tags = article.tags
+    comments = article.comments
+    counts = len(comments)
     viewarticle = ViewArticle(article)
-    return render_template('content/detail.html', data=article.body)
+    return render_template(
+        'content/detail.html',
+        article=viewarticle,
+        tags=tags,
+        comments=comments,
+        counts=counts)

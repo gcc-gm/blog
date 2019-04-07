@@ -31,6 +31,7 @@ class Article(Base):
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     pre_image = db.Column(db.String(80), unique=True, nullable=False)
     name = db.Column(db.String(20), unique=True, nullable=False)
+    intro = db.Column(db.Text)
     body = db.Column(db.Text, unique=False)
     hot = db.Column(db.Boolean, default=False)
     liked = db.relationship(
@@ -80,6 +81,7 @@ class Comment(Base):
     f_avatar = db.Column(db.String(30))
     f_name = db.Column(db.String(30))
     to_id = db.Column(db.Integer)
+    t_name = db.Column(db.String(30))
     article_id = db.Column(db.Integer, db.ForeignKey('articles.id'))
     body = db.Column(db.Text, nullable=False)
     body_html = db.Column(db.Text, nullable=False)
