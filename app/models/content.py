@@ -24,6 +24,10 @@ class Tag(Base):
     articles = db.relationship(
         'Article', secondary='association', back_populates='tags')
 
+    @classmethod
+    def all_tags(cls):
+        return cls.query.order_by(cls.timestamp.desc()).all()
+
 
 class Article(Base):
     __tablename__ = 'articles'
@@ -59,7 +63,8 @@ class Article(Base):
 
     @classmethod
     def get_new(cls):
-        new = cls.query.filter_by(hot=True).order_by(cls.timestamp.desc()).all()
+        new = cls.query.filter_by(hot=True).order_by(
+            cls.timestamp.desc()).all()
         return new
 
 

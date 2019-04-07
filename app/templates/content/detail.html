@@ -7,11 +7,38 @@ detail
 <link href="{{ url_for('static',filename='css/info.css') }}" rel="stylesheet">
 {% endblock %}
 
+{% block fenlei %}
+<div class="fenlei">
+    <h2>文章分类</h2>
+    <ul>
+        {% for sort in sorts %}
+        <li onclick="sorted({{ sort.id }})"><a href="#">{{ sort.name }}（{{ 23 }}）</a></li>
+        {% endfor %}
 
+    </ul>
+</div>
 
+{% endblock %}
 
+{% block cloud %}
+<div class="cloud">
+    <h2>标签云</h2>
+    <ul>
+        {% for t in tags_cloud %}
+        <a href="/">{{ t.name }}</a>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}
+{% block guanzhu %}
+<div class="guanzhu">
+    <h2>关注我 么么哒</h2>
+    <ul>
+        <img src="{{ url_for('static',filename='images/1.jpg')}}">
+    </ul>
+</div>
+{% endblock %}
 {%  block main %}
-
 <main>
     <div class="infosbox">
         <div class="newsview">
@@ -36,7 +63,6 @@ detail
             </div>
             <div class="news_con">
                 {{ article.body|safe }}
-
             </div>
         </div>
         <div class="share">
@@ -67,12 +93,7 @@ detail
 
                     </ul>
                 </div>
-
-
-
                 {% endfor %}
-
-
                 <script>
                     function CheckPl(obj) {
                         if (obj.saytext.value == "") {

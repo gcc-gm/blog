@@ -5,7 +5,7 @@ from flask.json import jsonify
 from flask_login import login_required
 
 from app.blog import blog
-from app.models.content import Article, Sorted
+from app.models.content import Article, Sorted, Tag
 from app.ViewModel.content import Recommend, ViewArticle, ViewArticles
 
 
@@ -14,13 +14,11 @@ def index():
     viewarticles = ViewArticles()
     page = request.args.get('page', 1, type=int)
     pagination = Article.query.order_by(Article.timestamp.desc()).paginate(
-        page, per_page=15, error_out=False)
+        page, per_page=10, error_out=False)
     viewarticles.fill(pagination.items)
     sorts = Sorted.query.all()
     recommend = Recommend()
     recommend.get_new()
-    print(recommend.articles)
-
     return render_template(
         'index/index.html',
         sorts=sorts,
@@ -42,12 +40,16 @@ def page_json(page):
 def detail(aid):
     article = Article.query.get_or_404(aid)
     tags = article.tags
+    sorts = Sorted.query.all()
     comments = article.comments
     counts = len(comments)
     viewarticle = ViewArticle(article)
+    tags_cloud = Tag.all_tags()
     return render_template(
         'content/detail.html',
         article=viewarticle,
-        tags=tags,
+        tags_cloud=tags_cloud,
         comments=comments,
+        sorts=sorts,
+        tags=tags,
         counts=counts)

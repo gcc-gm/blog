@@ -15,8 +15,13 @@ def register():
     form = RegisterForm()
     if form.validate_on_submit():
         email_token = TokenOperation.generate_token(email=form.email.data)
+        print(email_token)
 
-        send_mail('gccgm8564@qq.com', '测试', 'email/text.html', email_token=email_token)
+        # send_mail(
+        #     'gccgm8564@qq.com',
+        #     '测试',
+        #     'email/text.html',
+        #     email_token=email_token)
         with db.auto_commit():
             user = User()
             user.nickname = form.nickname.data
@@ -68,7 +73,11 @@ def forget_request():
     form = EmailForm()
     if form.validate_on_submit():
         token = TokenOperation.generate_token(email=form.email.data)
-        send_mail(form.email.data, 'forget_request', 'email/text.html', email_token=token)
+        send_mail(
+            form.email.data,
+            'forget_request',
+            'email/text.html',
+            email_token=token)
         print('success')
 
     return render_template('user/forget_request.html', form=form)

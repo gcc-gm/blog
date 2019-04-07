@@ -3,13 +3,13 @@
 import os
 from random import random
 
-from flask import render_template, request, send_from_directory, current_app
-from flask_login import login_required, current_user
+from flask import current_app, render_template, request, send_from_directory
+from flask_login import current_user, login_required
 
 from app.blog import blog
 from app.form.content import ArticleForm
-from app.libs.ImageUload import filer_save
 from app.libs.decorators import auth_required
+from app.libs.ImageUload import filer_save
 from app.models.base import db
 from app.models.content import Article
 from app.models.user import User
@@ -17,7 +17,7 @@ from app.models.user import User
 
 @blog.route('/submit', methods=['POST', 'GET'])
 @login_required
-@auth_required('superadmin')
+# @auth_required('superadmin')
 def create_article():
     form = ArticleForm()
     if form.validate_on_submit():
@@ -77,6 +77,4 @@ def like_article(aid):
 @blog.route('/pre/<int:aid>')
 def pre(aid):
     article = Article.query.get_or_404(aid)
-    return render_template('content/ArticleView.html',data=article.body)
-
-
+    return render_template('content/ArticleView.html', data=article.body)
