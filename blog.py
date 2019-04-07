@@ -13,7 +13,9 @@ def initdb(drop):
     from app.models.base import db
 
     if drop:
-        click.confirm('This operation will delete the database, do you want to continue?', abort=True)
+        click.confirm(
+            'This operation will delete the database, do you want to continue?',
+            abort=True)
         db.drop_all()
         click.echo('Drop tables.')
         db.create_all()
@@ -53,6 +55,8 @@ def faker(count=10):
         article.pre_image = faker.user_name()
 
         comment.body = faker.sentence()
+        comment.f_id = 1
+        comment.u_id = 2
 
         with db.auto_commit():
             db.session.add_all([user, article, comment])
@@ -71,3 +75,7 @@ def faker2(count=10):
             like.aid = 3
             db.session.add(like)
     click.echo('Done.')
+
+
+if __name__ == "__main__":
+    app.run()

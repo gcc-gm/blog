@@ -6,17 +6,14 @@ from markdown import markdown
 from app.models.base import Base, db
 
 # 辅助表
-association = db.Table('association',
-                       db.Column('tag_id', db.Integer,
-                                 db.ForeignKey('tags.id')),
-                       db.Column('article_id', db.Integer,
-                                 db.ForeignKey('articles.id')))
+association = db.Table(
+    'association', db.Column('tag_id', db.Integer, db.ForeignKey('tags.id')),
+    db.Column('article_id', db.Integer, db.ForeignKey('articles.id')))
 # 辅助表
-sort_article = db.Table('sort_article',
-                        db.Column('sort_id', db.Integer,
-                                  db.ForeignKey('sorts.id')),
-                        db.Column('article_id', db.Integer,
-                                  db.ForeignKey('articles.id')))
+sort_article = db.Table(
+    'sort_article', db.Column('sort_id', db.Integer,
+                              db.ForeignKey('sorts.id')),
+    db.Column('article_id', db.Integer, db.ForeignKey('articles.id')))
 
 
 class Tag(Base):
@@ -24,8 +21,8 @@ class Tag(Base):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(20), unique=True, nullable=False)
     # 多对多关系
-    articles = db.relationship('Article',
-                               secondary='association', back_populates='tags')
+    articles = db.relationship(
+        'Article', secondary='association', back_populates='tags')
 
 
 class Article(Base):
@@ -36,13 +33,17 @@ class Article(Base):
     name = db.Column(db.String(20), unique=True, nullable=False)
     body = db.Column(db.Text, unique=False)
     hot = db.Column(db.Boolean, default=False)
-    liked = db.relationship('Like', cascade='all', back_populates='articles', lazy='joined')
+    liked = db.relationship(
+        'Like', cascade='all', back_populates='articles', lazy='joined')
     author = db.relationship('User', back_populates='articles')
     # 一对多的双向关系
-    comments = db.relationship('Comment', cascade='all', back_populates='article')
+    comments = db.relationship(
+        'Comment', cascade='all', back_populates='article')
     # 多对多关系建立
-    tags = db.relationship('Tag', secondary='association', back_populates='articles')
-    sorts = db.relationship('Sorted', secondary='sort_article', back_populates='articles')
+    tags = db.relationship(
+        'Tag', secondary='association', back_populates='articles')
+    sorts = db.relationship(
+        'Sorted', secondary='sort_article', back_populates='articles')
 
     @classmethod
     def get_recommend(cls):
@@ -57,7 +58,7 @@ class Article(Base):
 
     @classmethod
     def get_new(cls):
-        new = cls.query.filter_by(hot=True).order_by(cls.timestamp.desc()).all
+        new = cls.query.filter_by(hot=True).order_by(cls.timestamp.desc()).all()
         return new
 
 
@@ -65,8 +66,11 @@ class Sorted(Base):
     __tablename__ = 'sorts'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(20), nullable=False, unique=True)
-    articles = db.relationship('Article', cascade='all',
-                               secondary='sort_article', back_populates='sorts')
+    articles = db.relationship(
+        'Article',
+        cascade='all',
+        secondary='sort_article',
+        back_populates='sorts')
 
 
 class Comment(Base):
@@ -85,11 +89,15 @@ class Comment(Base):
 
     @staticmethod
     def on_change_body(target, value, oldvalue, initiator):
-        allowed_tags = ['a', 'abbr', 'acronym', 'b', 'blockquote', 'code',
-                        'em', 'i', 'li', 'ol', 'pre', 'strong', 'ul',
-                        'h2', 'h3', 'p']
-        target.body_html = bleach.linkify(bleach.clean(markdown(value, output_format='html'), tags=allowed_tags,
-                                                       strip=True))
+        allowed_tags = [
+            'a', 'abbr', 'acronym', 'b', 'blockquote', 'code', 'em', 'i', 'li',
+            'ol', 'pre', 'strong', 'ul', 'h2', 'h3', 'p'
+        ]
+        target.body_html = bleach.linkify(
+            bleach.clean(
+                markdown(value, output_format='html'),
+                tags=allowed_tags,
+                strip=True))
 
 
 class Like(Base):
@@ -97,7 +105,8 @@ class Like(Base):
     uid = db.Column(db.Integer, db.ForeignKey('users.id'))
     aid = db.Column(db.Integer, db.ForeignKey('articles.id'))
     users = db.relationship('User', back_populates='likes', lazy='joined')
-    articles = db.relationship('Article', back_populates='liked', lazy='joined')
+    articles = db.relationship(
+        'Article', back_populates='liked', lazy='joined')
 
 
 db.event.listen(Comment.body, 'set', Comment.on_change_body)

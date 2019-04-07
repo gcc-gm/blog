@@ -8,7 +8,7 @@ class ViewArticle:
     def __init__(self, article):
         self.id = article.id
         self.pre_image = article.pre_image
-        self.author = article.author.nickname or '无名'
+        self.author = article.author.nickname if article.author else ''
         self.name = article.name
         self.body = article.body
         self.summary = article.body[:150]
@@ -40,6 +40,17 @@ class ViewArticles:
 
     def __getitem__(self, item):
         return getattr(self, item)
+
+
+class Recommend(ViewArticles):
+    def __init__(self):
+        super(Recommend, self).__init__()
+
+    def get_new(self):
+        from app.models.content import Article
+        rec = Article.get_new()
+        if rec:
+            self.fill(rec)
 
 
 class ViewComment:

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from flask_moment import Moment
+# from flask_moment import Moment
 
 from app.libs.blogflask import Flask
 from flask_bootstrap import Bootstrap
@@ -22,13 +22,14 @@ bootstrap = Bootstrap()
 mail = Mail()
 login_manager = LoginManager()
 migrate = Migrate()
-moment = Moment()
+
+# moment = Moment()
 
 
 def create_app():
     from app.blog import blog
     from app.models.base import db
-    from app.models.user import User
+    # from app.models.user import User
 
     app = Flask(__name__.split('.')[0])
     app.config.from_object('app.config.setting')
@@ -41,11 +42,12 @@ def create_app():
     bootstrap.init_app(app)
     pagedown.init_app(app)
     ckeditor.init_app(app)
-    moment.init_app(app)
+    # moment.init_app(app)
     admin.init_app(app)
 
     csrf.init_app(app)
     mail.init_app(app)
     db.init_app(app)
+    db.create_all(app=app)
     app.register_blueprint(blog)
     return app

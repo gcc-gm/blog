@@ -1,41 +1,52 @@
 {% extends 'base.html' %}
 
 {% block title %}
-    首页
+首页
 {% endblock %}
 
 {% block fenlei %}
-    <div class="fenlei">
-        <h2>文章分类</h2>
-        <ul>
-            {% for sort in sorts %}
-                <li onclick="sorted({{ sort.id }})"><a href="#">{{ sort.name }}（{{ 23 }}）</a></li>
-            {% endfor %}
+<div class="fenlei">
+    <h2>文章分类</h2>
+    <ul>
+        {% for sort in sorts %}
+        <li onclick="sorted({{ sort.id }})"><a href="#">{{ sort.name }}（{{ 23 }}）</a></li>
+        {% endfor %}
 
-        </ul>
-    </div>
+    </ul>
+</div>
+
+{% endblock %}
+{% block tuijian %}
+<div class="tuijian">
+    <h2>最新推荐</h2>
+    <ul>
+        {% for article in rec %}
+        <li><a href="/">{{ article.name }}</a></li>
+        {% endfor %}
+    </ul>
+</div>
 {% endblock %}
 {% block guanzhu %}
 {% endblock %}
 {% block main %}
 
-    <main class="r_box">
-        {% for article in articles %}
-            <li><i><a href="/"><img src="{{ url_for('static',filename='images/1.jpg') }}"></a></i>
-                <h3><a href="/">{{ article.name }}</a>
-                    <small>__{{ article.timestamp }}</small>
-                </h3>
-                <small>作者 : {{ article.author }}</small>
-                <P>
-                    {{ article.summary|safe }}
-                </P>
-            </li>
-        {% endfor %}
-    </main>
+<main class="r_box">
+    {% for article in articles %}
+    <li><i><a href="/"><img src="{{ url_for('static',filename='images/1.jpg') }}"></a></i>
+        <h3><a href="/">{{ article.name }}</a>
+            <small>__{{ article.timestamp }}</small>
+        </h3>
+        <small>作者 : {{ article.author }}</small>
+        <P>
+            {{ article.summary|safe }}
+        </P>
+    </li>
+    {% endfor %}
+</main>
 {% endblock %}
 
 {% block script %}
-    <script>
+<script>
 
-    </script>
+</script>
 {% endblock %}

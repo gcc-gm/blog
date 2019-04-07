@@ -1,0 +1,25 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+
+[packages]
+bootstrap-flask = "*"
+flask-login = "*"
+flask-mail = "*"
+flask-admin = "*"
+flask-wtf = "*"
+flask-sqlalchemy = "*"
+pymysql = "*"
+flask-ckeditor = "*"
+flask-pagedowm = "*"
+bleach = "*"
+markdown = "*"
+flask-pagedown = "*"
+cymysql = "*"
+faker = "*"
+
+[requires]
+python_version = "3.6"
