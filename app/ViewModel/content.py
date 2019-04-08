@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from app.models.content import Article
 
 
 class ViewArticle:
@@ -12,8 +13,16 @@ class ViewArticle:
         self.name = article.name
         self.body = article.body
         self.summary = article.body[:150]
-        self.comments = ''
         self.timestamp = article.timestamp
+        self.like_info = article.like_info
+        self.pre_name, self.pre_id = self.pre_next(article.id - 1)
+        self.next_name, self.next_id = self.pre_next(article.id + 1)
+
+    def pre_next(self, id):
+        a = Article.query.get(id)
+        if a:
+            return a.name, a.id
+        return '没有了', -1
 
     def keys(self):
         return ['id', 'name', 'body', 'timestamp', 'pre_image', 'author']

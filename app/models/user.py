@@ -15,19 +15,17 @@ from app.models.base import db, Base
 # 超管(SuperAdmin)
 from app.models.content import Like
 
-roles_permissions = db.Table('roles_permissions',
-                             db.Column('role_id', db.Integer,
-                                       db.ForeignKey('role.id')),
-                             db.Column('permission_id', db.Integer,
-                                       db.ForeignKey('permission.id'))
-                             )
+roles_permissions = db.Table(
+    'roles_permissions',
+    db.Column('role_id', db.Integer, db.ForeignKey('role.id')),
+    db.Column('permission_id', db.Integer, db.ForeignKey('permission.id')))
 
 
 class Permission(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30), unique=True)
-    roles = db.relationship('Role', secondary=roles_permissions,
-                            back_populates='permissions')
+    roles = db.relationship(
+        'Role', secondary=roles_permissions, back_populates='permissions')
 
 
 # blog中的权限定义:
@@ -42,24 +40,23 @@ class Permission(db.Model):
 # 普通管理                  ADMIN
 # 超级管理                  SUPERADMIN
 
+
 class Role(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30), unique=True)
-    permissions = db.relationship('Permission',
-                                  secondary=roles_permissions,
-                                  back_populates='roles')
+    permissions = db.relationship(
+        'Permission', secondary=roles_permissions, back_populates='roles')
     users = db.relationship('User', back_populates='role')
 
     @staticmethod
     def role_init():
         roles_permissions_map = {
             'User': ('LIKE', 'COMMENT', 'POSTSCRIPT'),
-            'Admin': ('LIKE', 'COMMENT', 'POSTSCRIPT',
-                      'UNCOMMENT', 'UNPOSTSCRIPT',
-                      'CREATE', 'UPLOAD', 'ADMIN'),
-            'SuperAdmin': ('LIKE', 'COMMENT', 'POSTSCRIPT',
-                           'UNCOMMENT', 'UNPOSTSCRIPT',
-                           'CREATE', 'UPLOAD', 'ADMIN', 'SUPERADMIN')
+            'Admin': ('LIKE', 'COMMENT', 'POSTSCRIPT', 'UNCOMMENT',
+                      'UNPOSTSCRIPT', 'CREATE', 'UPLOAD', 'ADMIN'),
+            'SuperAdmin':
+            ('LIKE', 'COMMENT', 'POSTSCRIPT', 'UNCOMMENT', 'UNPOSTSCRIPT',
+             'CREATE', 'UPLOAD', 'ADMIN', 'SUPERADMIN')
         }
         for role_name in roles_permissions_map:
             role = Role.query.filter_by(name=role_name).first()
@@ -68,7 +65,8 @@ class Role(db.Model):
                 db.session.add(role)
                 role.permissions = []
             for permission_name in roles_permissions_map[role_name]:
-                permission = Permission.query.filter_by(name=permission_name).first()
+                permission = Permission.query.filter_by(
+                    name=permission_name).first()
                 if permission is None:
                     permission = Permission(name=permission_name)
                 db.session.add(permission)
@@ -86,7 +84,8 @@ class User(UserMixin, Base):
     email = db.Column(db.String(30))
     _password = db.Column('password', db.String(256))
     articles = db.relationship('Article', back_populates='author')
-    likes = db.relationship('Like', cascade='all', back_populates='users', lazy='joined')
+    likes = db.relationship(
+        'Like', cascade='all', back_populates='users', lazy='joined')
     role = db.relationship('Role', back_populates='users')
 
     def __init__(self, **kwargs):
@@ -114,8 +113,7 @@ class User(UserMixin, Base):
 
     def can(self, permission_name):
         permission = Permission.query.filter_by(name=permission_name).first()
-        return self.role is not None and permission is not None and \
-               permission in self.role.permissions
+        return self.role is not None and permission is not None and permission in self.role.permissions
 
     def auth(self, identify):
         return self.role.name.upper() == identify.upper()
@@ -123,8 +121,7 @@ class User(UserMixin, Base):
     def had_like(self, article):
         if self.likes is None:
             return False
-        return Like.query.with_parent(self, property='likes').filter_by(aid=article.id).first() \
-               is not None
+        return Like.query.with_parent(self, property='likes').filter_by(aid=article.id).first()  is not None
 
     def like(self, article):
         if self.had_like(article):
@@ -134,7 +131,8 @@ class User(UserMixin, Base):
                 newLike.users = self
 
     def unlike(self, article):
-        theLike = Like.query.with_parent(self, property='likes').filter_by(aid=article.id).first()
+        theLike = Like.query.with_parent(
+            self, property='likes').filter_by(aid=article.id).first()
         if theLike:
             with db.auto_commit():
                 db.session.delete(theLike)

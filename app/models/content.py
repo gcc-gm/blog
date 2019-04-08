@@ -19,7 +19,7 @@ sort_article = db.Table(
 class Tag(Base):
     __tablename__ = 'tags'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(20), unique=True, nullable=False)
+    name = db.Column(db.String, unique=True, nullable=False)
     # 多对多关系
     articles = db.relationship(
         'Article', secondary='association', back_populates='tags')
@@ -50,16 +50,10 @@ class Article(Base):
     sorts = db.relationship(
         'Sorted', secondary='sort_article', back_populates='articles')
 
-    @classmethod
-    def get_recommend(cls):
-        pass
-
-    def get_comments(self):
-        if self.comments is None:
-            return []
-
-        comments = [self.comments]
-        return []
+    @property
+    def like_info(self):
+        likes = self.liked
+        return len(likes) if likes else 0
 
     @classmethod
     def get_new(cls):
@@ -78,6 +72,11 @@ class Sorted(Base):
         secondary='sort_article',
         back_populates='sorts')
 
+    @classmethod
+    def total(cls):
+        count = cls.articles
+        return len(count) if count else 0
+
 
 class Comment(Base):
     __tablename__ = 'comments'
@@ -87,6 +86,7 @@ class Comment(Base):
     f_name = db.Column(db.String(30))
     to_id = db.Column(db.Integer)
     t_name = db.Column(db.String(30))
+    t_content = db.Column(db.Text)
     article_id = db.Column(db.Integer, db.ForeignKey('articles.id'))
     body = db.Column(db.Text, nullable=False)
     body_html = db.Column(db.Text, nullable=False)
