@@ -14,9 +14,10 @@
         <h2>文章分类</h2>
         <ul>
             {% for sort in sorts %}
-                <li onclick="sorted({{ sort.id }})"><a href="#">{{ sort.name }}（{{ sort.total }}）</a></li>
+                <li onclick="sorted()">
+                    <a href="{{ url_for('blog.class_articles',sid=sort.id) }}">{{ sort.name }}（{{ sort.total }}）</a>
+                </li>
             {% endfor %}
-
         </ul>
     </div>
 
@@ -47,8 +48,8 @@
                 <h3 class="news_title">{{ article.name }}</h3>
                 <div class="bloginfo">
                     <ul>
-                        <li class="author">作者：<a href="/">{{ article.author }}</a></li>
-                        <li class="lmname"><a href="/">学无止境</a></li>
+                        <li class="author">作者：<a href="#">{{ article.author }}</a></li>
+                        <li class="lmname"><a href="#">学无止境</a></li>
                         <li class="timer">{{ article.timestamp }}</li>
                         <li class="view">点赞： {{ article.like_info }}</li>
                     </ul>
@@ -70,9 +71,16 @@
             <div class="share">
                 <p class="diggit">
                     {% if current_user.is_authenticated %}
-                        <a href="{{ url_for('blog.like_article',aid=article.id ) }}">
-                            <b>点个赞呗!</b>&nbsp;(<b>{{ article.like_info }}</b>)
-                        </a>
+                        {% if not current_user.had_like(article) %}
+                            <a href="{{ url_for('blog.like_article',aid=article.id ) }}">
+                                <b>点个赞呗!</b>&nbsp;(<b>{{ article.like_info }}</b>)
+                            </a>
+                        {% else %}
+                            <a href="#">
+                                <b>已赞!</b>&nbsp;(<b>{{ article.like_info }}</b>)
+                            </a>
+                        {% endif %}
+
                     {% else %}
                         <a href="{{ url_for('blog.login' ) }}">
                             <b>登陆后点赞!</b>
@@ -81,8 +89,16 @@
                 </p>
             </div>
             <div class="nextinfo">
-                <p>上一篇：<a href="/">{{ article.pre_name }}</a></p>
-                <p>下一篇：<a href="/">{{ article.next_name }}</a></p>
+                <p>上一篇：
+                    <a href="{% if article.pre_id == -1 %}#{% else %}{{ url_for('blog.detail',aid=article.pre_id) }}{% endif %}">
+                        {{ article.pre_name }}
+                    </a>
+                </p>
+                <p>下一篇：
+                    <a href="{% if article.next_id == -1 %}#{% else %}{{ url_for('blog.detail',aid=article.next_id) }}{% endif %}">
+                        { article.next_name }}
+                    </a>
+                </p>
             </div>
             <div class="news_pl">
                 <h2>文章评论</h2>
@@ -91,61 +107,57 @@
 
                         <div class="fb">
                             <ul style="background: url({{ url_for('static',filename='images/tx7.jpg') }}) no-repeat top 20px left 10px;">
-                                <p class="fbtime"><span>{{ comment.timestamp }}</span> {{ comment.f_name }}</p>
-                                <cpntent class="fbinfo">{{ comment.body_html|safe }}</cpntent>
-                                {% if comment.to_id %}
-                                    <div class="ecomment"><span class="ecommentauthor">网友 {{ comment.t_name }} 的原文：</span>
-                                        <p class="ecommenttext">{{ comment.t_content|safe }}</p>
-                                    </div>
-                                {% endif %}
+                                <a href="#cont" onclick="info({{ comment.f_id }})">
+                                    <p class="fbtime"><span>{{ comment.timestamp }}</span> {{ comment.f_name }}</p>
+                                    <cpntent class="fbinfo">{{ comment.body_html|safe }}</cpntent>
+                                    {% if comment.to_id %}
+                                        <div class="ecomment">
+                                        <span class="ecommentauthor">
+                                            网友 {{ comment.t_name }} 的原文：
+                                        </span>
+                                            <p class="ecommenttext">{{ comment.t_content|safe }}</p>
+                                        </div>
+
+                                    {% endif %}
+                                </a>
 
                             </ul>
                         </div>
                     {% endfor %}
                     <script>
-                        let csrftoken = $('meta[name=csrf-token]').attr('content');
 
-                        $.ajaxSetup({
-                            beforeSend: function (xhr, settings) {
-                                if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
-                                    xhr.setRequestHeader("X-CSRFToken", csrftoken)
-                                }
-                            }
-                        });
+                        let uid = {{ current_user.id }}
+                        function info(f_id){
+                           if (uid === f_id){
 
-                        function CheckPl(obj) {
-                            if (obj.body.value.length == 1) {
-                                console.log(12);
-                                obj.body.focus();
-                                return false;
-                            }
-                            return true;
+
+                           }else {
+                                console.log(f_id);
+                            $("option[value=f_id]");
+                           }
+
                         }
+
                     </script>
-                    <form action="/" method="post" name="saypl" id="saypl"
-                          onsubmit="return CheckPl(document.saypl)">
+                    <form action="{{ url_for('blog.new_comment',aid=article.id) }}" method="post" name="saypl" id="saypl">
                         <div id="plpost">
                             <p class="saying"><span><a href="#">共有
-                                    <script type="text/javascript"
-                                            src="#"></script>
                                     {{ counts }}条评论</a></span>来说两句吧...
                             </p>
-                            <div class="yname"><span>邮箱:</span>
-                                <label for="">
-                                    <input name="email" type="text" class="inputText" id="email" value="" size="16"
-                                           required/>
-                                </label>
-                            </div>
-                            <div class="yzm"><span>密码:</span>
+                            <div id="cont">
                                 <label>
-                                    <input name="password" type="password" class="inputText" size="16" required/>
+                                    <input type="radio" name="postscript" value=1 />回复
                                 </label>
+
+                                <select name="cars">
+                                    {% for comment in comments %}
+                                        <option  value="{{ comment.f_id }}">{{ comment.f_name }}</option>
+                                    {% endfor %}
+                                </select>
+                                {{ form.csrf_token() }}
+                                {{ form.body(class="text-body", rows="5", placeholder="你有什么想法？") }}
+                                {{ form.submit() }}
                             </div>
-
-                            {{ form.csrf_token() }}
-                            {{ form.body(style='with=100%' ,class="text-body", rows="5", placeholder="你有什么想法？") }}
-                            {{ form.submit() }}
-
                         </div>
                     </form>
                 </div>

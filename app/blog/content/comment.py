@@ -11,11 +11,11 @@ from app.models.base import db
 from app.models.content import Article, Comment, Sorted
 
 
-@blog.route('/newComment/<int:aid>', methods=['POST', 'GET'])
-# @login_required
+@blog.route('/newComment/<int:aid>',methods=['POST'])
+@login_required
 def new_comment(aid):
-    form = CommentForm()
-    if form.validate_on_submit():
+    form = CommentForm(request.form)
+    if form.validate():
         article = Article.query.get_or_404(aid)
         comment = Comment()
         with db.auto_commit():
@@ -23,6 +23,7 @@ def new_comment(aid):
             comment.body = form.body.data
             article.comments.append(comment)
         return 'success'
+
     return render_template('content/postscript.html', form=form)
 
 

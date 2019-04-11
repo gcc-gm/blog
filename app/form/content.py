@@ -3,7 +3,7 @@
 from flask_pagedown.fields import PageDownField
 from flask_wtf import FlaskForm
 from flask_ckeditor import CKEditorField
-from wtforms import SubmitField, StringField,Form
+from wtforms import SubmitField, StringField, Form, IntegerField
 from wtforms.validators import DataRequired
 
 
@@ -15,7 +15,7 @@ class ArticleForm(FlaskForm):
 
 class PostscriptForm(FlaskForm):
     body = PageDownField('what is your mind?', validators=[DataRequired()])
-    submit = SubmitField('Submit')
+    submit = SubmitField()
 
 
 class CommentForm(PostscriptForm):
@@ -24,4 +24,3 @@ class CommentForm(PostscriptForm):
 
 class SearchForm(Form):
     keyboard = StringField(validators=[DataRequired(message='关键字不能为空')])
-

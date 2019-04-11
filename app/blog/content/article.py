@@ -107,3 +107,19 @@ def search():
             articles=viewarticles.articles,
             rec=recommend.articles[:8])
     abort(404)
+
+
+@blog.route('/class/article/<int:sid>')
+def class_articles(sid):
+    sort = Sorted.query.get_or_404(sid)
+    viewarticles = ViewArticles()
+    viewarticles.fill(sort.articles)
+    sorts = Sorted.query.all()
+    recommend = Recommend()
+    recommend.get_new()
+    return render_template(
+        'index/index.html',
+        sorts=sorts,
+        articles=viewarticles.articles,
+        rec=recommend.articles[:8]
+    )

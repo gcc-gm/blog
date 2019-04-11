@@ -52,7 +52,7 @@ a.curPage { color: #19585d; font-weight: bold; }
 .picinfo h3 { border-bottom: #ccc 1px solid; padding: 10px 0; margin: 0 20px; font-size: 16px }
 .picinfo span { padding: 10px 20px; display: block; color: #666; }
 .picbox ul li a:hover { color: #19585d }
-.tags a { background: #F4650E; padding: 3px 8px; margin: 0 5px 0 0; color: #fff; }
+.tags a { background: #3299bb; padding: 3px 8px; margin: 0 5px 0 0; color: #fff; }
 .tags { margin: 10px 0; }
 .infosbox img { max-width: 100%; height: auto; width: 100% }
 .share { padding: 20px; }
