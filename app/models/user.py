@@ -55,23 +55,23 @@ class Role(db.Model):
             'Admin': ('LIKE', 'COMMENT', 'POSTSCRIPT', 'UNCOMMENT',
                       'UNPOSTSCRIPT', 'CREATE', 'UPLOAD', 'ADMIN'),
             'SuperAdmin':
-            ('LIKE', 'COMMENT', 'POSTSCRIPT', 'UNCOMMENT', 'UNPOSTSCRIPT',
-             'CREATE', 'UPLOAD', 'ADMIN', 'SUPERADMIN')
+                ('LIKE', 'COMMENT', 'POSTSCRIPT', 'UNCOMMENT', 'UNPOSTSCRIPT',
+                 'CREATE', 'UPLOAD', 'ADMIN', 'SUPERADMIN')
         }
-        for role_name in roles_permissions_map:
-            role = Role.query.filter_by(name=role_name).first()
-            if role is None:
-                role = Role(name=role_name)
-                db.session.add(role)
-                role.permissions = []
-            for permission_name in roles_permissions_map[role_name]:
-                permission = Permission.query.filter_by(
-                    name=permission_name).first()
-                if permission is None:
-                    permission = Permission(name=permission_name)
-                db.session.add(permission)
-                role.permissions.append(permission)
-                db.session.commit()
+        with db.auto_commit():
+            for role_name in roles_permissions_map:
+                role = Role.query.filter_by(name=role_name).first()
+                if role is None:
+                    role = Role(name=role_name)
+                    role.permissions = []
+                    db.session.add(role)
+                for permission_name in roles_permissions_map[role_name]:
+                    permission = Permission.query.filter_by(
+                        name=permission_name).first()
+                    if permission is None:
+                        permission = Permission(name=permission_name)
+                    role.permissions.append(permission)
+                    db.session.add(permission)
 
 
 class User(UserMixin, Base):
@@ -121,14 +121,16 @@ class User(UserMixin, Base):
     def had_like(self, article):
         if self.likes is None:
             return False
-        return Like.query.with_parent(self, property='likes').filter_by(aid=article.id).first()  is not None
+        return Like.query.with_parent(self, property='likes').filter_by(aid=article.id).first() is not None
 
     def like(self, article):
-        if self.had_like(article):
+        if not self.had_like(article):
             with db.auto_commit():
                 newLike = Like()
                 newLike.articles = article
                 newLike.users = self
+                return True
+        return False
 
     def unlike(self, article):
         theLike = Like.query.with_parent(
@@ -136,13 +138,29 @@ class User(UserMixin, Base):
         if theLike:
             with db.auto_commit():
                 db.session.delete(theLike)
+                return True
+        return False
 
 
 class Gust(AnonymousUserMixin):
-    def can(self, permission_name):
+    @staticmethod
+    def can(_):
         return False
 
-    def is_administrator(self):
+    @staticmethod
+    def is_administrator():
+        return False
+
+    @staticmethod
+    def had_like(_):
+        return True
+
+    @staticmethod
+    def like(_):
+        return False
+
+    @staticmethod
+    def unlike(_):
         return False
 
 

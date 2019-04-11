@@ -19,9 +19,13 @@ def initdb(drop):
         db.drop_all()
         click.echo('Drop tables.')
         db.create_all()
+        from app.models.user import Role
+        Role.role_init()
         click.echo('Initialized database.')
     else:
         db.create_all()
+        from app.models.user import Role
+        Role.role_init()
         click.echo('Initialized database.')
 
 
@@ -55,8 +59,8 @@ def faker(count=10):
         article.pre_image = faker.user_name()
 
         comment.body = faker.sentence()
-        comment.f_id = 1
-        comment.u_id = 2
+        comment.f_id = i
+        comment.u_id = 1
 
         with db.auto_commit():
             db.session.add_all([user, article, comment])

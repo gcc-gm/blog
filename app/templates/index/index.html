@@ -1,58 +1,59 @@
 {% extends 'base.html' %}
-
+{% import 'macro.html' as macro %}
 {% block title %}
-首页
+    首页
 {% endblock %}
 
 {% block fenlei %}
-<div class="fenlei">
-    <h2>文章分类</h2>
-    <ul>
-        {% for sort in sorts %}
-        <li onclick="sorted()"><a href="#">{{ sort.name }}（{{ 21 }}）</a></li>
-        {% endfor %}
+    <div class="fenlei">
+        <h2>文章分类</h2>
+        <ul>
+            {% for sort in sorts %}
+                <li onclick="sorted()"><a href="#">{{ sort.name }}（{{ sort.total }}）</a></li>
+            {% endfor %}
 
-    </ul>
-</div>
+        </ul>
+    </div>
 
 {% endblock %}
 {% block tuijian %}
-<div class="tuijian">
-    <h2>最新推荐</h2>
-    <ul>
-        {% for article in rec %}
-        <li><a href="/">{{ article.name }}</a></li>
-        {% endfor %}
-    </ul>
-</div>
+    <div class="tuijian">
+        <h2>最新推荐</h2>
+        <ul>
+            {% for article in rec %}
+                <li><a href="/">{{ article.name }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
 {% endblock %}
 {% block guanzhu %}
 {% endblock %}
 {% block main %}
 
-<main class="r_box">
-    {% for article in articles %}
-    <li><i><a href="/"><img src="{{ url_for('static',filename='images/1.jpg') }}"></a></i>
-        <h3><a href="/">{{ article.name }}</a>
-            <small>__{{ article.timestamp }}</small>
-        </h3>
-        <small>作者 : {{ article.author }}</small>
-        <P>
-            {{ article.summary|safe }}
-        </P>
-    </li>
-    {% endfor %}
-    <div class="pagelist"><a class="allpage"><b>99</b></a>&nbsp;&nbsp;<a href="#" class="curPage">1</a>&nbsp;&nbsp;<a
-            href="#" onclick="page(2)">2</a>&nbsp;&nbsp;<a href="#" onclick="page(3)">3</a>&nbsp;&nbsp;<a href="#"
-            onclick="page(4)">4</a>&nbsp;&nbsp;<a href="#" onclick="page(5)">5</a>&nbsp;&nbsp;<a href="#"
-            onclick="page(6)">6</a>&nbsp;&nbsp;<a href="#" onclick="page(7)">7</a>&nbsp;&nbsp;<a href="#"
-            onclick="page(8)">8</a>&nbsp;&nbsp;<a href="#" onclick="page(9)">9</a>&nbsp;&nbsp;<a href="#"
-            onclick="page(2)">下一页</a></div>
-</main>
+    <main class="r_box">
+        {% for article in articles %}
+            <li><i><a href="{{ url_for('blog.detail',aid=article.id) }}"><img src="{{ url_for('static',filename='images/1.jpg') }}"></a></i>
+                <h3><a href="{{ url_for('blog.detail',aid=article.id) }}">{{ article.name }}</a>
+
+                </h3>
+                <small>作者 : {{ article.author }}</small>   <small style="margin-left: 5px">{{ article.timestamp }}</small>
+                <P>
+                    {{ article.summary|safe }}
+                </P>
+            </li>
+        {% endfor %}
+        {% if pagination %}
+            <div class="pagelist">
+                {{ macro.pagination_widget(pagination, 'blog.index') }}
+            </div>
+        {% endif %}
+
+    </main>
+
 {% endblock %}
 
 {% block script %}
-<script>
+    <script>
 
-</script>
+    </script>
 {% endblock %}

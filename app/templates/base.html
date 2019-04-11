@@ -5,12 +5,12 @@
     <meta charset="UTF-8">
     <title>
         {% block title %}
-        首页 - 一个人博客网站
+            首页 - 一个人博客网站
         {% endblock %}
     </title>
 
-    <meta name="keywords" content="个人博客,个人博客模板" />
-    <meta name="description" content="" />
+    <meta name="keywords" content="个人博客,个人博客模板"/>
+    <meta name="description" content=""/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="{{ url_for('static',filename='css/base.css') }}" rel="stylesheet">
     <link href="{{ url_for('static',filename='css/index.css') }}" rel="stylesheet">
@@ -24,24 +24,29 @@
 </head>
 
 <body>
-    {% block header %}
+{% block header %}
     <header class="header-navigation" id="header">
         <nav>
             <div class="logo"><a href="/">BLK的个人博客</a></div>
             <h2 id="mnavh"><span class="navicon"></span></h2>
             <ul id="starlist">
                 <li><a href="/">首页</a></li>
-                <li><a href="/">登录</a></li>
-                <li><a href="/">注册</a></li>
+                {% if current_user.is_authenticated %}
+                <li><a href="/">{{ current_user.nickname }}</a></li>
+                <li><a href="/">个人中心</a></li>
+                {% else %}
+                <li><a href="{{ url_for('blog.login') }}">登陆</a></li>
+                <li><a href="{{ url_for('blog.register') }}">注册</a></li>
+                {% endif %}
             </ul>
         </nav>
     </header>
-    {% endblock %}
+{% endblock %}
 
-    <article>
-        <aside class="l_box">
+<article>
+    <aside class="l_box">
 
-            {% block about_me %}
+        {% block about_me %}
             <div class="about_me">
                 <h2>关于站长</h2>
                 <ul>
@@ -51,77 +56,60 @@
                     </p>
                 </ul>
             </div>
-            {% endblock %}
+        {% endblock %}
 
-            {% block search %}
+        {% block search %}
             <div class="search">
-                <form action="#" method="post" name="searchform" id="searchform">
-                    <input name="keyboard" id="keyboard" class="input_text" value="请输入关键字词"
-                        style="color: rgb(153, 153, 153);"
-                        onfocus="if(value=='请输入关键字词'){this.style.color='#000';value=''}"
-                        onblur="if(value==''){this.style.color='#999';value='请输入关键字词'}" type="text">
-                    <input name="show" value="title" type="hidden">
-                    <input name="tempid" value="1" type="hidden">
-                    <input name="tbname" value="news" type="hidden">
-                    <input name="Submit" class="input_submit" value="搜索" type="submit">
+                <form action="{{ url_for('blog.search') }}" method="get" name="searchform" id="searchform">
+                    <input name="keyboard" id="keyboard" class="input_text" placeholder="文章标题"
+                           style="color: rgb(153, 153, 153);" type="text"/>
+                    <input name="submit" class="input_submit" type="submit"/>
                 </form>
             </div>
-            {% endblock %}
+        {% endblock %}
 
-            {% block fenlei %}
+        {% block fenlei %}
             <div class="fenlei">
-                <h2>文章分类</h2>
-                <ul>
-                    <li class="lsss" value="1"><a href="#">分类1（33）</a></li>
-                    <li><a href="#">分类2（19）</a></li>
-                    <li><a href="#">分类3（19）</a></li>
-                    <li><a href="#">分类4 (3)</a></li>
-                </ul>
-            </div>
-            {% endblock %}
 
-            {% block tuijian %}
+        {% endblock %}
 
-            {% endblock %}
+        {% block tuijian %}
 
-            {% block links %}
+        {% endblock %}
+
+        {% block links %}
             <div class="links">
                 <h2>友情链接</h2>
                 <ul>
                     <a href="http://www.yangqq.com">杨青个人博客</a> <a href="http://www.yangqq.com">杨青博客</a>
                 </ul>
             </div>
-            {% endblock %}
+        {% endblock %}
 
-            {% block cloud %}
-
-            {% endblock %}
-
-            {% block guanzhu %}
-            <div class="guanzhu">
-                <h2>关注我 么么哒</h2>
-                <ul>
-                    <img src="images/wx.jpg">
-                </ul>
-            </div>
-            {% endblock %}
-
-        </aside>
-        {% block main %}
+        {% block cloud %}
 
         {% endblock %}
 
+        {% block guanzhu %}
 
-    </article>
+        {% endblock %}
+
+    </aside>
+    {% block main %}
+
+    {% endblock %}
+
+
+</article>
 
 
 
-    {% block footer %}
+{% block footer %}
     <footer>
         <p>Design by <a href="#" target="_blank">BLK个人博客</a> <a href="/">蜀ICP备11002373号-1</a></p>
     </footer>
     <a href="#" class="cd-top">Top</a>
-    {% endblock %}
+{% endblock %}
 </body>
 
 {% block script %}

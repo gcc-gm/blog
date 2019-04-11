@@ -3,7 +3,7 @@
 from flask_pagedown.fields import PageDownField
 from flask_wtf import FlaskForm
 from flask_ckeditor import CKEditorField
-from wtforms import SubmitField, StringField
+from wtforms import SubmitField, StringField,Form
 from wtforms.validators import DataRequired
 
 
@@ -20,3 +20,8 @@ class PostscriptForm(FlaskForm):
 
 class CommentForm(PostscriptForm):
     pass
+
+
+class SearchForm(Form):
+    keyboard = StringField(validators=[DataRequired(message='关键字不能为空')])
+

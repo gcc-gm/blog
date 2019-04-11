@@ -1,0 +1,22 @@
+{% macro pagination_widget(pagination,endpoint) %}
+    <div class="pagination">
+        <a {% if not pagination.has_prev %} class="allpage"{% endif %} href="{% if pagination.has_prev %}{{ url_for(endpoint,page=pagination.page - 1,**kwargs) }}{% else %}#{% endif %}">
+            <b>上一页</b>
+        </a>&nbsp;&nbsp;
+        {% for p in pagination.iter_pages() %}
+            {% if p %}
+                {% if p == pagination.page %}
+                    <a class="curPage" href="{{ url_for(endpoint, page=p ,**kwargs ) }}">{{ p }}</a>&nbsp;&nbsp;
+                {% else %}
+                    <a href="{{ url_for(endpoint, page=p,**kwargs ) }}">{{ p }}</a>&nbsp;&nbsp;
+                {% endif %}
+            {% else %}
+                <a class="allpage" href="#">&hellip;</a>
+            {% endif %}
+        {% endfor %}
+        <a {% if not pagination.has_next %} class="allpage"{% endif %} href="{% if pagination.has_next %}
+                    {{ url_for(endpoint,page=pagination.page + 1,**kwargs) }}{% else %}#{% endif %}">
+            <b>下一页</b>
+        </a>
+    </div>
+{% endmacro %}

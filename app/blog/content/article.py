@@ -3,21 +3,22 @@
 import os
 from random import random
 
-from flask import current_app, render_template, request, send_from_directory
+from flask import current_app, render_template, request, send_from_directory, abort
 from flask_login import current_user, login_required
 
+from app.ViewModel.content import ViewArticles, Recommend
 from app.blog import blog
-from app.form.content import ArticleForm
+from app.form.content import ArticleForm, SearchForm
 from app.libs.decorators import auth_required
 from app.libs.ImageUload import filer_save
 from app.models.base import db
-from app.models.content import Article
+from app.models.content import Article, Sorted, Like
 from app.models.user import User
 
 
 @blog.route('/submit', methods=['POST', 'GET'])
 @login_required
-# @auth_required('superadmin')
+@auth_required('superadmin')
 def create_article():
     form = ArticleForm()
     if form.validate_on_submit():
@@ -50,6 +51,7 @@ def save_upload():
 
 
 @blog.route('/edit/<int:id>', methods=['POST', 'GET'])
+@login_required
 @auth_required('superadmin')
 def editArticle(id):
     form = ArticleForm()
@@ -66,15 +68,42 @@ def editArticle(id):
 
 
 @blog.route('/likeArticle/<int:aid>')
+@login_required
 def like_article(aid):
-    article = Article.query.get_or_404(aid)
-    with db.auto_commit():
-        article.like += 1
-        db.session.add(article)
+    article = Article.query.get(aid)
+    if article and current_user.like(article):
         return 'success'
+    return 'fail'
+
+
+@blog.route('/unlike/<int:aid>')
+def unlike(aid):
+    article = Article.query.get(aid)
+    if article and current_user.unlike(article):
+        return 'success'
+    return 'fail'
 
 
 @blog.route('/pre/<int:aid>')
 def pre(aid):
     article = Article.query.get_or_404(aid)
     return render_template('content/ArticleView.html', data=article.body)
+
+
+@blog.route('/search')
+def search():
+    form = SearchForm(request.args)
+    if form.validate():
+        viewarticles = ViewArticles()
+        articles = Article.query.filter(Article.name.like("%" + form.keyboard.data + "%")).order_by(
+            Article.timestamp).all()
+        viewarticles.fill(articles)
+        sorts = Sorted.query.all()
+        recommend = Recommend()
+        recommend.get_new()
+        return render_template(
+            'index/index.html',
+            sorts=sorts,
+            articles=viewarticles.articles,
+            rec=recommend.articles[:8])
+    abort(404)

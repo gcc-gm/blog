@@ -1,133 +1,154 @@
 {% extends 'base.html' %}
 
 {% block title %}
-detail
+    detail
 {% endblock %}
 {% block scripts %}
-<link href="{{ url_for('static',filename='css/info.css') }}" rel="stylesheet">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    {{ pagedown.include_pagedown() }}
+    <link href="{{ url_for('static',filename='css/info.css') }}" rel="stylesheet">
 {% endblock %}
 
 {% block fenlei %}
-<div class="fenlei">
-    <h2>文章分类</h2>
-    <ul>
-        {% for sort in sorts %}
-        <li onclick="sorted({{ sort.id }})"><a href="#">{{ sort.name }}（{{ 23 }}）</a></li>
-        {% endfor %}
+    <div class="fenlei">
+        <h2>文章分类</h2>
+        <ul>
+            {% for sort in sorts %}
+                <li onclick="sorted({{ sort.id }})"><a href="#">{{ sort.name }}（{{ sort.total }}）</a></li>
+            {% endfor %}
 
-    </ul>
-</div>
+        </ul>
+    </div>
 
 {% endblock %}
 
 {% block cloud %}
-<div class="cloud">
-    <h2>标签云</h2>
-    <ul>
-        {% for t in tags_cloud %}
-        <a href="/">{{ t.name }}</a>
-        {% endfor %}
-    </ul>
-</div>
+    <div class="cloud">
+        <h2>标签云</h2>
+        <ul>
+            {% for t in tags_cloud %}
+                <a href="/">{{ t.name }}</a>
+            {% endfor %}
+        </ul>
+    </div>
 {% endblock %}
 {% block guanzhu %}
-<div class="guanzhu">
-    <h2>关注我 么么哒</h2>
-    <ul>
-        <img src="{{ url_for('static',filename='images/1.jpg')}}">
-    </ul>
-</div>
+    <div class="guanzhu">
+        <h2>关注我 么么哒</h2>
+        <ul>
+            <img src="{{ url_for('static',filename='images/1.jpg') }}">
+        </ul>
+    </div>
 {% endblock %}
-{%  block main %}
-<main>
-    <div class="infosbox">
-        <div class="newsview">
-            <h3 class="news_title">{{ article.name }}</h3>
-            <div class="bloginfo">
-                <ul>
-                    <li class="author">作者：<a href="/">{{ article.author}}</a></li>
-                    <li class="lmname"><a href="/">学无止境</a></li>
-                    <li class="timer">{{ article.timestamp}}</li>
-                    <li class="view">点赞：{{ 23 }}</li>
-                </ul>
-            </div>
-            <div class="tags">
-                {% for tag in tags %}
-                <a href="/" target="_blank">{{ tag.name }}</a>
-                &nbsp;
-                {% endfor %}
-            </div>
-            <div class="news_about">
-                <strong>简介</strong>
-                <p>{{ article.intro}}</p>
-            </div>
-            <div class="news_con">
-                {{ article.body|safe }}
-            </div>
-        </div>
-        <div class="share">
-            <p class="diggit"><a
-                    href="JavaScript:makeRequest('/e/public/digg/?classid=3&amp;id=19&amp;dotop=1&amp;doajax=1&amp;ajaxarea=diggnum','EchoReturnedText','GET','');">
-                    点个赞哦！ </a>(<b id="diggnum">
-                    {{ article.like_info }}</b>)
-            </p>
-        </div>
-        <div class="nextinfo">
-            <p>上一篇：<a href="/news/life/2018-03-13/804.html">{{ article.pre_name }}</a></p>
-            <p>下一篇：<a href="/news/life/">{{ article.next_name }}</a></p>
-        </div>
-        <div class="news_pl">
-            <h2>文章评论</h2>
-            <div class="gbko">
-                {% for comment in comments %}
-
-                <div class="fb">
+{% block main %}
+    <main>
+        <div class="infosbox">
+            <div class="newsview">
+                <h3 class="news_title">{{ article.name }}</h3>
+                <div class="bloginfo">
                     <ul>
-                        <p class="fbtime"><span>{{ comment.timestamp}}</span> {{comment.f_name}}</p>
-                        <cpntent class="fbinfo">{{ comment.body_html|safe }}</cpntent>
-
-                        <div class="ecomment"><span class="ecommentauthor">网友 {{comment.t_name}} 的原文：</span>
-                            <p class="ecommenttext">坚持哟!看你每天都有写，请继续加油，再接再厉哦</p>
-                        </div>
-
+                        <li class="author">作者：<a href="/">{{ article.author }}</a></li>
+                        <li class="lmname"><a href="/">学无止境</a></li>
+                        <li class="timer">{{ article.timestamp }}</li>
+                        <li class="view">点赞： {{ article.like_info }}</li>
                     </ul>
                 </div>
-                {% endfor %}
-                <script>
-                    function CheckPl(obj) {
-                        if (obj.saytext.value == "") {
-                            alert("您没什么话要说吗？");
-                            obj.saytext.focus();
-                            return false;
+                <div class="tags">
+                    {% for tag in tags %}
+                        <a href="/" target="_blank">{{ tag.name }}</a>
+                        &nbsp;
+                    {% endfor %}
+                </div>
+                <div class="news_about">
+                    <strong>简介</strong>
+                    <p>{{ article.intro }}</p>
+                </div>
+                <div class="news_con">
+                    {{ article.body|safe }}
+                </div>
+            </div>
+            <div class="share">
+                <p class="diggit">
+                    {% if current_user.is_authenticated %}
+                        <a href="{{ url_for('blog.like_article',aid=article.id ) }}">
+                            <b>点个赞呗!</b>&nbsp;(<b>{{ article.like_info }}</b>)
+                        </a>
+                    {% else %}
+                        <a href="{{ url_for('blog.login' ) }}">
+                            <b>登陆后点赞!</b>
+                        </a>
+                    {% endif %}
+                </p>
+            </div>
+            <div class="nextinfo">
+                <p>上一篇：<a href="/">{{ article.pre_name }}</a></p>
+                <p>下一篇：<a href="/">{{ article.next_name }}</a></p>
+            </div>
+            <div class="news_pl">
+                <h2>文章评论</h2>
+                <div class="gbko">
+                    {% for comment in comments %}
+
+                        <div class="fb">
+                            <ul style="background: url({{ url_for('static',filename='images/tx7.jpg') }}) no-repeat top 20px left 10px;">
+                                <p class="fbtime"><span>{{ comment.timestamp }}</span> {{ comment.f_name }}</p>
+                                <cpntent class="fbinfo">{{ comment.body_html|safe }}</cpntent>
+                                {% if comment.to_id %}
+                                    <div class="ecomment"><span class="ecommentauthor">网友 {{ comment.t_name }} 的原文：</span>
+                                        <p class="ecommenttext">{{ comment.t_content|safe }}</p>
+                                    </div>
+                                {% endif %}
+
+                            </ul>
+                        </div>
+                    {% endfor %}
+                    <script>
+                        let csrftoken = $('meta[name=csrf-token]').attr('content');
+
+                        $.ajaxSetup({
+                            beforeSend: function (xhr, settings) {
+                                if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                                    xhr.setRequestHeader("X-CSRFToken", csrftoken)
+                                }
+                            }
+                        });
+
+                        function CheckPl(obj) {
+                            if (obj.body.value.length == 1) {
+                                console.log(12);
+                                obj.body.focus();
+                                return false;
+                            }
+                            return true;
                         }
-                        return true;
-                    }
-                </script>
-                <form action="/e/pl/doaction.php" method="post" name="saypl" id="saypl"
-                    onsubmit="return CheckPl(document.saypl)">
-                    <div id="plpost">
-                        <p class="saying"><span><a href="/e/pl/?classid=77&amp;id=106">共有
+                    </script>
+                    <form action="/" method="post" name="saypl" id="saypl"
+                          onsubmit="return CheckPl(document.saypl)">
+                        <div id="plpost">
+                            <p class="saying"><span><a href="#">共有
                                     <script type="text/javascript"
-                                        src="/e/public/ViewClick/?classid=77&amp;id=106&amp;down=2"></script>
+                                            src="#"></script>
                                     {{ counts }}条评论</a></span>来说两句吧...
-                        </p>
-                        <p class="yname"><span>用户名:</span>
-                            <input name="username" type="text" class="inputText" id="username" value="" size="16">
-                        </p>
-                        <p class="yzm"><span>验证码:</span>
-                            <input name="key" type="text" class="inputText" size="16">
-                        </p>
-                        <input name="nomember" type="hidden" id="nomember" value="1" checked="checked">
-                        <textarea name="saytext" rows="6" id="saytext"></textarea>
-                        <input name="imageField" type="submit" value="提交">
-                        <input name="id" type="hidden" id="id" value="106">
-                        <input name="classid" type="hidden" id="classid" value="77">
-                        <input name="enews" type="hidden" id="enews" value="AddPl">
-                        <input name="repid" type="hidden" id="repid" value="0">
-                        <input type="hidden" name="ecmsfrom" value="/joke/talk/2018-07-23/106.html">
-                    </div>
-                </form>
+                            </p>
+                            <div class="yname"><span>邮箱:</span>
+                                <label for="">
+                                    <input name="email" type="text" class="inputText" id="email" value="" size="16"
+                                           required/>
+                                </label>
+                            </div>
+                            <div class="yzm"><span>密码:</span>
+                                <label>
+                                    <input name="password" type="password" class="inputText" size="16" required/>
+                                </label>
+                            </div>
+
+                            {{ form.csrf_token() }}
+                            {{ form.body(style='with=100%' ,class="text-body", rows="5", placeholder="你有什么想法？") }}
+                            {{ form.submit() }}
+
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
-    </div>
-    {% endblock %}
+{% endblock %}

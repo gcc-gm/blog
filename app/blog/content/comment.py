@@ -12,7 +12,7 @@ from app.models.content import Article, Comment, Sorted
 
 
 @blog.route('/newComment/<int:aid>', methods=['POST', 'GET'])
-@login_required
+# @login_required
 def new_comment(aid):
     form = CommentForm()
     if form.validate_on_submit():
