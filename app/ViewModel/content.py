@@ -12,7 +12,7 @@ class ViewArticle:
         self.author = article.author.nickname if article.author else ''
         self.name = article.name
         self.body = article.body
-        self.summary = article.body[:150]
+        self.summary = article.intro
         self.timestamp = article.timestamp
         self.like_info = article.like_info
         self.pre_name, self.pre_id = self.pre_or_next(article.id - 1)

@@ -35,7 +35,7 @@
         {% if articles %}
             {% for article in articles %}
                 <li><i><a href="{{ url_for('blog.detail',aid=article.id) }}"><img
-                        src="{{ url_for('static',filename='images/1.jpg') }}"></a></i>
+                        src="{{ url_for('static',filename='pre_image/' + article.pre_image) }}"></a></i>
                     <h3><a href="{{ url_for('blog.detail',aid=article.id) }}">{{ article.name }}</a>
 
                     </h3>

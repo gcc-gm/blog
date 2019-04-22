@@ -39,7 +39,7 @@ def create_article():
             article.pre_image = pre_image.filename
             article.intro = form.intro.data
             user.articles.append(article)
-        return redirect(url_for('blog.admin'))
+        return redirect('/admin/article/')
     return render_template('content/newArticle.html', form=form)
 
 
@@ -75,14 +75,14 @@ def editArticle(aid):
     return render_template('content/editArticle.html', form=form)
 
 
-@blog.route('/likeArticle', methods=["POST"])
+@blog.route('/likeArticle', methods=["GET"])
 @login_required
 def like_article():
     """
     用户点赞
     :return:
     """
-    aid = request.form.get('aid')
+    aid = request.args.get('aid')
     if aid is None:
         flash('参数异常')
         return redirect(url_for('blog.index'))
