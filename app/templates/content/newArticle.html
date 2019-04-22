@@ -6,30 +6,25 @@
     {{ ckeditor.load_code_theme() }}
     {{ bootstrap.load_css() }}
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>new a article</title>
 </head>
 
 <body>
-    {% from 'bootstrap/form.html' import render_form %}
-    {% block content %}
+{% from 'bootstrap/form.html' import render_form %}
+{% block content %}
     <div class="container">
         <div class="row">
             <div class="col-md-10 offset-md-1">
-
                 {{ form.csrf_token() }}
-                {{ render_form(form,method='post',action='') }}
-
-
+                {{ render_form(form,method='post') }}
             </div>
 
         </div>
     </div>
-
-
-    {% endblock %}
-    {{ ckeditor.load(url_for('static', filename='ckeditor/ckeditor.js')) }}
-    {{ ckeditor.config(name='body') }}
-    {{ bootstrap.load_js() }}
+{% endblock %}
+{{ ckeditor.load(url_for('static', filename='ckeditor/ckeditor.js')) }}
+{{ ckeditor.config(name='body') }}
+{{ bootstrap.load_js() }}
 </body>
 
 </html>

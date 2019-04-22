@@ -48,6 +48,8 @@ def detail(aid):
     viewarticle = ViewArticle(article)
     tags_cloud = Tag.all_tags()
     form = CommentForm()
+    recommend = Recommend()
+    recommend.get_new()
     return render_template(
         'content/detail.html',
         article=viewarticle,
@@ -56,4 +58,5 @@ def detail(aid):
         sorts=sorts,
         tags=tags,
         form=form,
+        rec=recommend.articles[:8],
         counts=counts)

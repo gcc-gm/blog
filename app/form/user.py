@@ -10,8 +10,11 @@ from app.models.user import User
 class RegisterForm(FlaskForm):
     nickname = StringField('昵称:', validators=[DataRequired(), Length(2, 19, message='长度不符合')])
 
-    email = StringField('请输入你的电子邮箱:', validators=[DataRequired(), Length(8, 64),
-                                                  Email(message='电子邮箱不符合规范！')])
+    email = StringField('请输入你的电子邮箱:', validators=[DataRequired(), Length(8, 64), Email(message='电子邮箱不符合规范！')],
+                        render_kw={
+                            'title': '邮箱不合规范!',
+                            'pattern': '^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z0-9]{2,6}$'
+                        })
     submit = SubmitField('Submit')
 
     def validate_email(self, field):

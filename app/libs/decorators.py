@@ -25,7 +25,7 @@ def auth_required(identify):
     def decorated(f):
         @wraps(f)
         def decorated_func(*args, **kwargs):
-            if not current_user.auth(identify.upper()):
+            if not current_user.auth_identify(identify.upper()):
                 abort(403)
             return f(*args, **kwargs)
 

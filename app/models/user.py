@@ -88,14 +88,16 @@ class User(UserMixin, Base):
         'Like', cascade='all', back_populates='users', lazy='joined')
     role = db.relationship('Role', back_populates='users')
 
-    def __init__(self, **kwargs):
+    def __init__(self, nickname=None, email=None, **kwargs):
+        self.nickname = nickname
+        self.email = email
         super(User, self).__init__(**kwargs)
         if self.role is None:
             with db.auto_commit():
                 if self.email == current_app.config['ADMIN']:
-                    self.role = Role.query.filter_by(name='ADMIN').first()
+                    self.role = Role.query.filter_by(name='Admin').first()
                 elif self.email == current_app.config['SUPERADMIN']:
-                    self.role = Role.query.filter_by(name='SUPERADMIN').first()
+                    self.role = Role.query.filter_by(name='SuperAdmin').first()
                 else:
                     self.role = Role.query.filter_by(name='User').first()
 
@@ -115,7 +117,7 @@ class User(UserMixin, Base):
         permission = Permission.query.filter_by(name=permission_name).first()
         return self.role is not None and permission is not None and permission in self.role.permissions
 
-    def auth(self, identify):
+    def auth_identify(self, identify):
         return self.role.name.upper() == identify.upper()
 
     def had_like(self, article):

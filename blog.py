@@ -8,10 +8,9 @@ app = create_app()
 
 @app.cli.command()
 @click.option('--drop', is_flag=True, help='Create after drop.')
-def initdb(drop):
+def sql_init(drop):
     """Initialize the database."""
     from app.models.base import db
-
     if drop:
         click.confirm(
             'This operation will delete the database, do you want to continue?',
@@ -30,7 +29,7 @@ def initdb(drop):
 
 
 @app.cli.command()
-def initrole():
+def init_role():
     click.echo('Initializing the roles and permissions...')
     from app.models.user import Role
     Role.role_init()
@@ -38,47 +37,24 @@ def initrole():
 
 
 @app.cli.command()
-def faker(count=10):
-    from faker import Faker
+def init_st():
+    click.echo('Initializing the some sorted and tags...')
+    from app.models.content import Sorted, Tag
     from app.models.base import db
-    from app.models.user import User
-    from app.models.content import Article, Comment
-
-    faker = Faker('zh_CN')
-    for i in range(count):
-        user = User()
-        article = Article()
-        comment = Comment()
-
-        user.nickname = faker.user_name()
-        user.email = faker.safe_email()
-        user.password = faker.isbn10()
-
-        article.name = faker.user_name()
-        article.body = faker.text()
-        article.pre_image = faker.user_name()
-
-        comment.body = faker.sentence()
-        comment.f_id = i
-        comment.u_id = 1
-
+    default_sorted = ['实用的教程', '随笔', '学习', 'Flask', 'python']
+    default_tags = ['win10', '安卓', '教程', '心情', '电脑', '骚操作']
+    for con in default_sorted:
         with db.auto_commit():
-            db.session.add_all([user, article, comment])
-
-
-@app.cli.command()
-def faker2(count=10):
-    from faker import Faker
-    from app.models.base import db
-    from app.models.content import Like
-    faker = Faker('zh_CN')
-    for i in range(count):
+            s = Sorted()
+            s.name = con
+            db.session.add(s)
+    for t in default_tags:
         with db.auto_commit():
-            like = Like()
-            like.uid = 12
-            like.aid = 3
-            db.session.add(like)
-    click.echo('Done.')
+            tt = Tag()
+            tt.name = t
+            db.session.add(tt)
+
+    click.echo('all done')
 
 
 if __name__ == "__main__":

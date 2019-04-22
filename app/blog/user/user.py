@@ -15,20 +15,16 @@ def register():
     form = RegisterForm()
     if form.validate_on_submit():
         email_token = TokenOperation.generate_token(email=form.email.data)
-        print(email_token)
-
-        # send_mail(
-        #     'gccgm8564@qq.com',
-        #     '测试',
-        #     'email/text.html',
-        #     email_token=email_token)
+        send_mail(
+            'gccgm8564@qq.com',
+            'token',
+            'email/send_token.html',
+            email_token=email_token)
         with db.auto_commit():
-            user = User()
-            user.nickname = form.nickname.data
-            user.email = form.email.data
+            user = User(nickname=form.nickname.data, email=form.email.data)
             db.session.add(user)
-            flash('success')
-        return render_template('user/register.html', form=form)
+        flash('请注意查收邮件!')
+        return redirect(url_for('blog.index'))
 
     return render_template('user/register.html', form=form)
 
@@ -41,7 +37,7 @@ def set_password_by_token(token):
         user = User.query.filter_by(email=email).first_or_404()
         with db.auto_commit():
             user.password = form.password_1.data
-            flash('success')
+            flash('设置成功!')
         return redirect(url_for('blog.login'))
     return render_template('user/setpassword.html', form=form)
 
@@ -49,7 +45,8 @@ def set_password_by_token(token):
 @blog.route('/login', methods=['POST', 'GET'])
 def login():
     if current_user.is_authenticated:
-        return 'is login'
+        flash('请不要重复登陆!')
+        return redirect(url_for('blog.index'))
     form = LoginForm()
     if form.validate_on_submit():
         login_user(User.query.filter_by(email=form.email.data).first())
@@ -57,6 +54,7 @@ def login():
         if _next and _next.startswith('/'):
             return redirect(_next)
         else:
+            flash('欢迎来到BLK的个人博客!')
             return redirect(url_for('blog.index'))
     return render_template('user/login.html', form=form)
 
@@ -78,8 +76,8 @@ def forget_request():
             'forget_request',
             'email/text.html',
             email_token=token)
-        print('success')
-
+        flash('success')
+        return redirect(url_for('blog.index'))
     return render_template('user/forget_request.html', form=form)
 
 
@@ -92,5 +90,6 @@ def rest_pwd():
             user = User.query.get_or_404(current_user.id)
             user.password = form.new_pwd1.data
             db.session.add(user)
-            return 'success'
+            flash('设置成功!')
+        return redirect(url_for('blog.login'))
     return render_template('user/reset_pwd.html', form=form)

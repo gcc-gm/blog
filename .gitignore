@@ -117,7 +117,7 @@ venv.bak/
 
 # mypy
 .idea/
-__pycache__/
+/__pycache__/
 git.txt
 text.py
 .gitignore

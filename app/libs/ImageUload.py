@@ -8,12 +8,12 @@ from flask import request, current_app, url_for
 from flask_ckeditor import upload_success, upload_fail
 
 
-def filer_save(BasePath):
+def filer_save(base_path):
     if 'upload' in request.files:
         f = request.files['upload']
         if f and allow_ext(f.filename):
             _, ext = os.path.splitext(f.filename)
-            path = os.path.join(BasePath, 'upload')
+            path = os.path.join(base_path, 'upload')
             f.filename = uuid.uuid4().hex + ext
             try:
                 f.save(os.path.join(path, f.filename))

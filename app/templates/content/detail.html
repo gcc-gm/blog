@@ -1,5 +1,4 @@
 {% extends 'base.html' %}
-
 {% block title %}
     detail
 {% endblock %}
@@ -8,7 +7,8 @@
     {{ pagedown.include_pagedown() }}
     <link href="{{ url_for('static',filename='css/info.css') }}" rel="stylesheet">
 {% endblock %}
-
+{% block about_me %}
+{% endblock %}
 {% block fenlei %}
     <div class="fenlei">
         <h2>文章分类</h2>
@@ -20,9 +20,17 @@
             {% endfor %}
         </ul>
     </div>
-
 {% endblock %}
-
+{% block tuijian %}
+    <div class="tuijian">
+        <h2>最新推荐</h2>
+        <ul>
+            {% for article in rec %}
+                <li><a href="{{ url_for('blog.detail',aid=article.id) }}">{{ article.name }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}
 {% block cloud %}
     <div class="cloud">
         <h2>标签云</h2>
@@ -34,12 +42,7 @@
     </div>
 {% endblock %}
 {% block guanzhu %}
-    <div class="guanzhu">
-        <h2>关注我 么么哒</h2>
-        <ul>
-            <img src="{{ url_for('static',filename='images/1.jpg') }}">
-        </ul>
-    </div>
+
 {% endblock %}
 {% block main %}
     <main>
@@ -56,7 +59,7 @@
                 </div>
                 <div class="tags">
                     {% for tag in tags %}
-                        <a href="/" target="_blank">{{ tag.name }}</a>
+                        <a href="#" target="_blank">{{ tag.name }}</a>
                         &nbsp;
                     {% endfor %}
                 </div>
@@ -77,13 +80,13 @@
                             </a>
                         {% else %}
                             <a href="#">
-                                <b>已赞!</b>&nbsp;(<b>{{ article.like_info }}</b>)
+                                <b onclick="show()">已赞!</b>&nbsp
                             </a>
                         {% endif %}
 
                     {% else %}
-                        <a href="{{ url_for('blog.login' ) }}">
-                            <b>登陆后点赞!</b>
+                        <a href="#">
+                            <b id="likeRequest" onclick="newLike()">点个赞呗!!</b>
                         </a>
                     {% endif %}
                 </p>
@@ -96,7 +99,7 @@
                 </p>
                 <p>下一篇：
                     <a href="{% if article.next_id == -1 %}#{% else %}{{ url_for('blog.detail',aid=article.next_id) }}{% endif %}">
-                        { article.next_name }}
+                        {{ article.next_name }}
                     </a>
                 </p>
             </div>
@@ -104,7 +107,6 @@
                 <h2>文章评论</h2>
                 <div class="gbko">
                     {% for comment in comments %}
-
                         <div class="fb">
                             <ul style="background: url({{ url_for('static',filename='images/tx7.jpg') }}) no-repeat top 20px left 10px;">
                                 <a href="#cont" onclick="info({{ comment.f_id }})">
@@ -117,50 +119,42 @@
                                         </span>
                                             <p class="ecommenttext">{{ comment.t_content|safe }}</p>
                                         </div>
-
                                     {% endif %}
                                 </a>
-
                             </ul>
                         </div>
                     {% endfor %}
-                    <script>
-
-                        let uid = {{ current_user.id }}
-                        function info(f_id){
-                           if (uid === f_id){
-
-
-                           }else {
-                                console.log(f_id);
-                            $("option[value=f_id]");
-                           }
-
-                        }
-
-                    </script>
-                    <form action="{{ url_for('blog.new_comment',aid=article.id) }}" method="post" name="saypl" id="saypl">
+                    <form action="{{ url_for('blog.new_comment',aid=article.id) }}" method="post" name="saypl"
+                          id="saypl">
                         <div id="plpost">
-                            <p class="saying"><span><a href="#">共有
+                            {% if ccounts %}
+                                <p class="saying"><span><a href="#">共有
                                     {{ counts }}条评论</a></span>来说两句吧...
-                            </p>
-                            <div id="cont">
-                                <label>
-                                    <input type="radio" name="postscript" value=1 />回复
-                                </label>
-
-                                <select name="cars">
-                                    {% for comment in comments %}
-                                        <option  value="{{ comment.f_id }}">{{ comment.f_name }}</option>
-                                    {% endfor %}
-                                </select>
-                                {{ form.csrf_token() }}
-                                {{ form.body(class="text-body", rows="5", placeholder="你有什么想法？") }}
-                                {{ form.submit() }}
-                            </div>
+                                </p>
+                            {% endif %}
+                            {{ form.csrf_token() }}
+                            {{ form.body(class="text-body", rows="5", placeholder="评论功能还未上线") }}
                         </div>
                     </form>
                 </div>
             </div>
         </div>
+    </main>
+{% endblock %}
+{% block script %}
+    <script>
+        function show() {
+            $.message({
+                message: '已经点过赞了-',
+                type: 'success',
+            });
+        }
+
+        function newLike() {
+                $.message({
+                message: '你好像没有登陆-',
+                type: 'warning',
+            });
+        }
+    </script>
 {% endblock %}

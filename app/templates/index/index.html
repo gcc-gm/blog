@@ -9,8 +9,8 @@
         <h2>文章分类</h2>
         <ul>
             {% for sort in sorts %}
-                <li onclick="sorted()">
-                    <a href="{{ url_for('blog.class_articles',sid=sort.id) }}">{{ sort.name }}（{{ sort.total }}）</a>
+                <li>
+                    <a href="{{ url_for('blog.class_articles',sid=sort.id) }}">{{ sort.name }}_[{{ sort.total }}]</a>
                 </li>
             {% endfor %}
         </ul>
@@ -22,7 +22,7 @@
         <h2>最新推荐</h2>
         <ul>
             {% for article in rec %}
-                <li><a href="/">{{ article.name }}</a></li>
+                <li><a href="{{ url_for('blog.detail',aid=article.id) }}">{{ article.name }}</a></li>
             {% endfor %}
         </ul>
     </div>
@@ -32,32 +32,28 @@
 {% block main %}
 
     <main class="r_box">
-    {% if articles %}
-        {% for article in articles %}
-            <li><i><a href="{{ url_for('blog.detail',aid=article.id) }}"><img src="{{ url_for('static',filename='images/1.jpg') }}"></a></i>
-                <h3><a href="{{ url_for('blog.detail',aid=article.id) }}">{{ article.name }}</a>
+        {% if articles %}
+            {% for article in articles %}
+                <li><i><a href="{{ url_for('blog.detail',aid=article.id) }}"><img
+                        src="{{ url_for('static',filename='images/1.jpg') }}"></a></i>
+                    <h3><a href="{{ url_for('blog.detail',aid=article.id) }}">{{ article.name }}</a>
 
-                </h3>
-                <small>作者 : {{ article.author }}</small>   <small style="margin-left: 5px">{{ article.timestamp }}</small>
-                <P>
-                    {{ article.summary|safe }}
-                </P>
-            </li>
-        {% endfor %}
-        {% if pagination %}
-            <div class="pagelist">
-                {{ macro.pagination_widget(pagination, 'blog.index') }}
-            </div>
+                    </h3>
+                    <small>作者 : {{ article.author }}</small>
+                    <small style="margin-left: 5px">{{ article.timestamp }}</small>
+                    <P>
+                        {{ article.summary|safe }}
+                    </P>
+                </li>
+            {% endfor %}
+            {% if pagination %}
+                <div class="pagelist">
+                    {{ macro.pagination_widget(pagination, 'blog.index') }}
+                </div>
+            {% endif %}
+        {% else %}
+            <p>没有任何信息！</p>
         {% endif %}
-    {% else %}
-    <p>没有任何信息！</p>
-    {% endif %}
     </main>
 
-{% endblock %}
-
-{% block script %}
-    <script>
-
-    </script>
 {% endblock %}

@@ -1,4 +1,3 @@
- @charset "gb2312";
 .l_box h2 { color: #333; font-size: 14px; line-height: 30px; padding-left: 20px; background: #fff }
 .l_box div { background: rgba(255,255,255,0.5); margin-bottom: 20px; overflow: hidden }
 .l_box div ul { padding: 10px; overflow: hidden }
@@ -61,7 +60,7 @@ a.curPage { color: #19585d; font-weight: bold; }
 .nextinfo a:hover { color: #000; text-decoration: underline }
 /*��������*/
 .news_pl { margin: 10px 0 20px 0; width: 100%; overflow: hidden; }
-.news_pl h2 { border-bottom: #000 2px solid; line-height: 40px; font-size: 14px; padding-left: 10px; color: #000 }
+.news_pl h2 { border-bottom: #fff 2px solid; line-height: 40px; font-size: 14px; padding-left: 10px; color: #000 }
 .diggit { width: 160px; margin: auto; background: #E2523A; color: #fff; box-shadow: 1px 2px 6px 0px rgba(0,0,0,.2); border-radius: 3px; line-height: 40px; text-align: center; }
 .diggit a { color: #fff; }
 #diggnum { margin: 5px; }
@@ -91,3 +90,4 @@ img#plKeyImg { display: inline-block; }
 #plpost input[type="submit"] { display: block; background: #303030; color: #fff; border: 0; line-height: 30px; padding: 0 20px; border-radius: 5px; float: right; }
 textarea#flask-pagedown-body { width: 100%; }
 #plpost { margin: 0 20px }
+.flask-pagedown{width: 100%; margin-top:10px;}

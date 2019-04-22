@@ -12,9 +12,13 @@ from flask_login import LoginManager
 from flask_ckeditor import CKEditor
 from flask_pagedown import PageDown
 from flask_admin import Admin
-from app.ViewModel.AdminModel import MyView
+from app.ViewModel.AdminModel import BlogView, AdminUser, AdminArticle
+from flask_admin.contrib.fileadmin import FileAdmin
+import os.path as op
 
-admin = Admin(index_view=MyView(), template_mode='bootstrap3')
+from app.models.base import db
+
+admin = Admin(index_view=BlogView(), template_mode='bootstrap3')
 pagedown = PageDown()
 ckeditor = CKEditor()
 csrf = CSRFProtect()
@@ -23,14 +27,9 @@ mail = Mail()
 login_manager = LoginManager()
 migrate = Migrate()
 
-# moment = Moment()
-
 
 def create_app():
     from app.blog import blog
-    from app.models.base import db
-    # from app.models.user import User
-
     app = Flask(__name__.split('.')[0])
     app.config.from_object('app.config.setting')
     app.config.from_object('app.config.ckeditor4')
@@ -42,12 +41,17 @@ def create_app():
     bootstrap.init_app(app)
     pagedown.init_app(app)
     ckeditor.init_app(app)
-    # moment.init_app(app)
     admin.init_app(app)
 
+    admin.add_view(AdminUser(db.session, name='用户'))
+    admin.add_view(AdminArticle(db.session, name='文章'))
+    path = op.join(op.dirname(__file__), 'static')
+    admin.add_view(FileAdmin(path, '/static/', name='Static Files'))
     csrf.init_app(app)
     mail.init_app(app)
     db.init_app(app)
     db.create_all(app=app)
     app.register_blueprint(blog)
     return app
+
+# Flask setup here
