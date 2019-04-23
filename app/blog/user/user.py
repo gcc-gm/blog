@@ -19,7 +19,7 @@ def register():
             'gccgm8564@qq.com',
             'token',
             'email/send_token.html',
-            email_token=email_token)
+            email_token=email_token, email=form.email.data)
         with db.auto_commit():
             user = User(nickname=form.nickname.data, email=form.email.data)
             db.session.add(user)

@@ -24,6 +24,7 @@ roles_permissions = db.Table(
 class Permission(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30), unique=True)
+    status = db.Column(db.Boolean, default=True)
     roles = db.relationship(
         'Role', secondary=roles_permissions, back_populates='permissions')
 
@@ -44,6 +45,7 @@ class Permission(db.Model):
 class Role(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30), unique=True)
+    status = db.Column(db.Boolean, default=True)
     permissions = db.relationship(
         'Permission', secondary=roles_permissions, back_populates='roles')
     users = db.relationship('User', back_populates='role')

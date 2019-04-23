@@ -7,6 +7,7 @@
             首页 - 一个人博客网站
         {% endblock %}
     </title>
+
     <meta name="keywords" content="FlASK搭建博客,Flask"/>
     <meta name="description" content=""/>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -47,14 +48,14 @@
                 <h2>关于站长</h2>
                 <ul>
                     <i><img src="{{ url_for('static', filename='images/about_me.jpg') }}"></i>
-                    <p><b>BLk</b>，男 嗯,没什么可介绍的了
-                    </p>
+                    <p><b>BLk</b>，男 嗯,没什么可介绍的了 </p>
                 </ul>
             </div>
         {% endblock %}
         {% block search %}
             <div class="search">
-                <form onsubmit="return search(document.searchform)" action="{{ url_for('blog.search') }}" method="get" name="searchform"
+                <form onsubmit="return search(document.searchform)" action="{{ url_for('blog.search') }}" method="get"
+                      name="searchform"
                       id="searchform">
                     <input name="keyboard" id="keyboard" class="input_text" placeholder="文章标题"
                            style="color: rgb(153, 153, 153);" value="" type="text"/>
@@ -75,7 +76,7 @@
             </script>
         {% endblock %}
         {% block fenlei %}
-            <div class="fenlei">
+            <div class="fenlei"></div>
         {% endblock %}
         {% block tuijian %}
         {% endblock %}

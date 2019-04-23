@@ -127,3 +127,4 @@ app/config/
 app/static
 # Pyre type checker
 .pyre/
+!/app/static/

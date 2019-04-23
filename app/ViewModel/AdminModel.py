@@ -99,5 +99,45 @@ class AdminArticle(ModelView):
     edit_modal = False
 
 
-class MessageAdmin(ModelView):
-    pass
+class AdminClass(ModelView):
+    column_list = ('id', 'name', 'status')
+    column_labels = {
+        'id': 'ID',
+        'status': '状态',
+        'name': '类名'
+    }
+    can_delete = True  # disable model deletion
+    page_size = 50  # the number of entries to display on the list view
+    create_modal = True
+    edit_modal = True
+
+    def __init__(self, session, **kwargs):
+        from app.models.content import Sorted
+        super(AdminClass, self).__init__(Sorted, session, **kwargs)
+
+    def is_accessible(self):
+        if current_user.is_authenticated and current_user.auth_identify('superadmin'):
+            return True
+        return False
+
+
+class AdminTags(ModelView):
+    column_list = ('id', 'name', 'status')
+    column_labels = {
+        'id': 'ID',
+        'status': '状态',
+        'name': '标签名'
+    }
+    can_delete = True  # disable model deletion
+    page_size = 50  # the number of entries to display on the list view
+    create_modal = True
+    edit_modal = True
+
+    def __init__(self, session, **kwargs):
+        from app.models.content import Tag
+        super(AdminTags, self).__init__(Tag, session, **kwargs)
+
+    def is_accessible(self):
+        if current_user.is_authenticated and current_user.auth_identify('superadmin'):
+            return True
+        return False
